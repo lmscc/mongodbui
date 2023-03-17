@@ -3,24 +3,18 @@ import { dataType } from './enum'
 export class KeyValueItem<keyType = string | number, valueType = string | number | KeyValueArr> {
   id = Math.random()
 
-  key: keyType
   initKey: keyType
-  value: valueType
   initValue: valueType
-  type: dataType
   initType: dataType
-  isArrayItem: boolean
-  wrap: KeyValueArr
-  isNewAdded: boolean
   isExpanded = false
   isDeleted = false
   constructor(
-    key: keyType,
-    value: valueType,
-    type: dataType,
-    isArrayItem: boolean,
-    wrap: KeyValueArr,
-    isNewAdded: boolean = false
+    public key: keyType,
+    public value: valueType,
+    public type: dataType,
+    public isArrayItem: boolean,
+    public wrap: KeyValueArr,
+    public isNewAdded: boolean = false
   ) {
     this.initKey = this.key = key
     this.initValue = this.value = value

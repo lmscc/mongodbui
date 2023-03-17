@@ -143,7 +143,7 @@ function Item({
             }
             onRefresh()
           }}
-          style={{ fontWeight: type === key ? 'bold' : '' }}
+          style={{ fontWeight: type === key ? '' : '' }}
         >
           {key}
         </div>
@@ -201,7 +201,6 @@ function Item({
           <Input
             lineHeight={lineHeight}
             fontSize={13}
-            fontWeight={550}
             value={key}
             editable={!isArrayItem && !isObjectId && isEditable}
             fitWidth
@@ -306,6 +305,7 @@ export default function ObjDisplay({
   const jsxArr: JSX.Element[] = []
   const [time, settime] = useState(Math.random())
   const [isModified, setisModified] = useState(false)
+  // 根据传入的obj，生成一个组件内部维护的状态 KeyValueArr
   const [KeyValueArr, setKeyValueArr] = useState(obj2arr(obj))
   useEffect(() => {
     setKeyValueArr(obj2arr(obj))

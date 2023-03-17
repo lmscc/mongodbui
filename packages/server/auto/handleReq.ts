@@ -1,6 +1,7 @@
 import { resolve } from "path"
 import fs from "fs"
 const regExp = /\/\/ ?autoStart([\s\S]*)\/\/ ?autoEnd/
+
 export default function (arr: arrItem[]) {
 
   const filePath = resolve(__dirname, '../../client/src/request/index.tsx')

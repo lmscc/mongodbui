@@ -1,10 +1,11 @@
 import ObjDisplay from '@/components/common/objview/index'
-import { useState, memo } from 'react'
+import { useState } from 'react'
 import { Button } from 'antd'
 import clipboard from 'clipboard'
 import './ColListItem.styl'
 import { deleteDocument, findDocumentById, updateDocument } from '@/request/index'
 import store from '@/global'
+import getLazyComponent from '@/components/common/LazyLoad'
 function ColListItem({
   obj,
   dbName,
@@ -91,4 +92,5 @@ function ColListItem({
     </div>
   )
 }
+
 export default ColListItem

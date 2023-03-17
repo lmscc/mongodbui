@@ -12,16 +12,24 @@
     "@types/jsonwebtoken": "^9.0.1",
     "body-parser": "^1.20.1",
     "express": "^4.18.2",
+    "express-session": "^1.17.2",
     "jsonwebtoken": "^9.0.0",
     "mixi-pack": "^1.0.0",
     "mongodb": "^4.12.1",
     "mongoose": "^6.7.5"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && ncc build ./build/js/http/index.js -o ./build/dist -m",
-    "removeOld": "fse remove D:/桌面/serverpack/mongodbUI/index.js",
-    "move": "fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/server/build/dist D:/桌面/serverpack/mongodbUI",
+    "dev": "ts-node ./index",
+    
+    "buildStartServerFn":"tsc && ncc build ./build/js/http/index.js -o ./build/startServerFn",
+    "remove":"fse remove ../electron/dist/server",
+    "moveToElectron":"fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet ./build/startServerFn ../electron/dist/server",
+    "buildForElectron":"npm run buildStartServerFn && npm run remove && npm run moveToElectron",
+    
+    
+    "build": "tsc && ncc build ./build/js/index.js -o ./build/server -m",
+    "removeOld": "fse remove D:/桌面/serverpack/mongodbUI/server",
+    "move": "fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/server/build/server D:/桌面/serverpack/mongodbUI/server",
     "buildAndMove": "pnpm run build && pnpm run removeOld && pnpm run move"
   },
   "type": "commonjs"

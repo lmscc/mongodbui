@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from '@/global'
+import globalStore from '@/global'
 import type { dbMap } from '@/global/types'
 import type { AxiosError, CancelTokenSource } from 'axios'
 // import type { doc } from '@r/global'
@@ -45,7 +45,7 @@ function errorHandler(err: AxiosError) {
     }
   }
   if (err.code !== 'ERR_CANCELED') {
-    store.messageApi.open({
+    globalStore.messageApi.open({
       type: 'error',
       content: err.message
     })
@@ -65,7 +65,7 @@ axios.interceptors.request.use((config) => {
   cancelMap[url] = source
   config.cancelToken = source.token
   // jwt
-  config.headers != null && (config.headers.token = localStorage.getItem('jwt'))
+  // config.headers != null && (config.headers.token = localStorage.getItem('jwt'))
 
   return config
 })
@@ -78,11 +78,11 @@ axios.interceptors.response.use((res) => {
   } = res.data
   if (data.err) {
     // 错误处理
-    store.messageApi.open({
+    globalStore.messageApi.open({
       type: 'error',
       content: data.err
     })
-    return Promise.reject(new Error(data.err))
+    return Promise.reject(data.err)
   } else {
     return data.data
   }
@@ -92,22 +92,21 @@ axios.defaults.baseURL = import.meta.env.MODE === 'development' ? '/api' : '/mon
 export function logout() {
   return axios.post('/logout')
 }
-export function login(psd: string) {
+export function login(uri: string) {
   return axios.post<
     any,
-    | {
-        status: 'ok'
-        jwt: string
-      }
-    | {
-        status: 'err'
-      }
-    | {
-        status: 'isLogin'
-      }
-  >('/login', {
-    psd
-  })
+    {
+      status: true
+    }
+  >(
+    '/login',
+    {
+      uri
+    },
+    {
+      timeout: 4000
+    }
+  )
 }
 // autoStart
 export function getDbAndCollections() {
@@ -144,7 +143,14 @@ export function createColletion(dbName: string, colName: string) {
 }
 
 export function dropCollection(dbName: string, colName: string) {
-  return axios.post<any, string>('/dropCollection', {
+  return axios.post<any, boolean>('/dropCollection', {
+    dbName,
+    colName
+  })
+}
+
+export function findCollection(dbName: string, colName: string) {
+  return axios.post<any, collection>('/findCollection', {
     dbName,
     colName
   })
@@ -187,7 +193,14 @@ export function findDocumentById(dbName: string, colName: string, id: string) {
   })
 }
 
-export function findDocumnet(dbName: string, colName: string, skip: number, limit: number, condition: object) {
+export function findDocumnet(
+  dbName: string,
+  colName: string,
+  skip: number,
+  limit: number,
+  condition: object,
+  sort: any
+) {
   return axios.post<
     any,
     {
@@ -199,7 +212,8 @@ export function findDocumnet(dbName: string, colName: string, skip: number, limi
     colName,
     skip,
     limit,
-    condition
+    condition,
+    sort
   })
 }
 

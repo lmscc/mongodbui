@@ -1,15 +1,23 @@
-import { Input, Button, Segmented } from 'antd'
+import { Button, Segmented } from 'antd'
 import React, { useCallback, useEffect, useState } from 'react'
 import { findDocumnet } from '@/request/index'
 import ColListItem from './colListItem/Item'
 import CollectionEmpty from './CollectionEmpty'
 import { type dbMap } from '@/global/types'
 import { Loading } from '@/components/common/Loading'
-import ImportPopover from './ImportPopover'
+import ImportPopover from './handleio/ImportPopover'
 import { select, dispatch, selectByFn, type pageConfig } from '@/reducers/index'
 import './CollectionDetail.styl'
+import Search from './search/Search'
 import { useNav } from '@/router/navigate'
+import { LazyComponet } from '@/components/common/LazyLoad'
 const ONE_PAGE = 10
+const defaultConfig = {
+  skip: 0,
+  limit: Infinity,
+  sort: null,
+  condition: {}
+}
 
 function CollectionDetail({
   DbName,
@@ -27,12 +35,7 @@ function CollectionDetail({
     return state.colPageList.find((item) => item.id === id)
   })
   const [refreshDoc, setRefreshDoc] = useState(1)
-  console.log(DbName, colName, id, curPage)
-  // const isActive = activeColPageId === id
-  // as {
-  //   dbAndCol: dbMap
-  //   // docList: any[]
-  // }
+
   let docList = curPage && curPage.docList
 
   const col: collection =
@@ -43,7 +46,15 @@ function CollectionDetail({
         state.dbAndCol[DbName].collections.find((item) => item.name === colName)
       )
     }) || {}
-
+  /*
+  最大是多少条：
+    1、不能超过limit
+      比如limit为20，但查到了30条，就要限制max为20条 limit
+    2、查到20条，但是跳过15条，只剩下5条  count - skip
+    取小 Math.min(limit,count - skip)
+  */
+  const [max, setMax] = useState(col.count)
+  const [searchConfig, setSearchConfig] = useState(defaultConfig)
   const { goDb } = useNav()
 
   const [page, setPage] = useState(0)
@@ -52,56 +63,71 @@ function CollectionDetail({
   if (!docList) {
     docList = []
   }
+  function callWithErrorHandler(promise) {
+    setLoading(true)
+    promise
+      .catch(() => {
+        setMax(0)
+        curPage && (curPage.docList = [])
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+  function jumpPage(page) {
+    callWithErrorHandler(
+      findDocumnet(
+        DbName,
+        colName,
+        searchConfig.skip + ONE_PAGE * page,
+        Math.min(searchConfig.limit - ONE_PAGE * page, ONE_PAGE),
+        searchConfig.condition,
+        searchConfig.sort
+      ).then(({ arr, count }) => {
+        setMax(Math.min(searchConfig.limit, count - searchConfig.skip))
+        curPage && (curPage.docList = arr)
+        dispatch('', {})
+      })
+    )
+    setPage(page)
+  }
+  function handleSearch(condition, sort, skip, limit) {
+    setPage(0)
+    callWithErrorHandler(
+      findDocumnet(DbName, colName, skip, Math.min(ONE_PAGE, limit), condition, sort).then(({ arr, count }) => {
+        setSearchConfig({
+          condition,
+          sort,
+          skip,
+          limit
+        })
+        setMax(Math.min(limit, count - skip))
+        curPage && (curPage.docList = arr)
+        dispatch('', {})
+      })
+    )
+  }
+
   useEffect(() => {
+    setSearchConfig(defaultConfig)
+    setPage(0)
     if (col.count > 0) {
       setLoading(true)
-      setPage(0)
-      findDocumnet(DbName, colName, 0, ONE_PAGE, {}).then((data) => {
-        setLoading(false)
-        curPage && (curPage.docList = data.arr)
-        dispatch('', {
-          // colPageList: [...colPageList]
-          // docList: data.arr
-        })
-      })
+      jumpPage(0)
     } else {
-      setPage(0)
       setRefreshDoc((pre) => (pre ^= 1))
       curPage && (curPage.docList = [])
-      dispatch('', {
-        // colPageList: [...colPageList]
-      })
+      dispatch('', {})
     }
   }, [DbName, colName])
 
-  function handleFind() {
-    // setPage
-  }
   function getPrevPage() {
     const newPage = page - 1
-    setLoading(true)
-    findDocumnet(DbName, colName, newPage * ONE_PAGE, ONE_PAGE, {}).then((data) => {
-      setLoading(false)
-      curPage && (curPage.docList = data.arr)
-      dispatch('', {
-        // colPageList: [...colPageList]
-        // docList: data.arr
-      })
-    })
-    setPage(newPage)
+    jumpPage(newPage)
   }
   function getNextPage() {
     const newPage = page + 1
-    setLoading(true)
-    findDocumnet(DbName, colName, newPage * ONE_PAGE, ONE_PAGE, {}).then((data) => {
-      setLoading(false)
-      curPage && (curPage.docList = data.arr)
-      dispatch('', {
-        // colPageList: [...colPageList]
-        // docList: data.arr
-      })
-    })
-    setPage(newPage)
+    jumpPage(newPage)
   }
   function handleChange() {}
   const handleDelete = useCallback(
@@ -113,14 +139,29 @@ function CollectionDetail({
       newDbAndCol[DbName].collections[dbAndCol[DbName].collections.findIndex((item) => item.name === colName)].count =
         col.count - 1
       curPage.docList = curPage.docList.filter((item) => item._id !== id)
+      setMax((pre) => pre - 1)
+
       dispatch('', {
         dbAndCol: newDbAndCol
       })
     },
     [dbAndCol, DbName, curPage]
   )
-  // function handleDelete(id: string)
 
+  const [renderedCount, setRenderedCount] = useState(1)
+  const renderedList = docList.slice(0, renderedCount)
+  function renderMore() {
+    setRenderedCount((pre) => {
+      if (pre + 2 > docList.length) {
+        return docList.length
+      } else {
+        return pre + 2
+      }
+    })
+  }
+  useEffect(() => {
+    setRenderedCount(1)
+  }, [page])
   return (
     <div className="colection">
       <div className="title">
@@ -140,25 +181,16 @@ function CollectionDetail({
           </div>
         </div>
       </div>
-      <div className="search">
-        <Input placeholder={"Type a query: {field:'value'}"} />
-        <Button>Reset</Button>
-        <Button type="primary" onClick={handleFind}>
-          Find
-        </Button>
-        <Button>{'</>'}</Button>
-      </div>
+      <Search onSearch={handleSearch} dbCol={`${DbName}.${colName}`} />
       <div className="operation">
         <ImportPopover></ImportPopover>
         <Button>EXPORT COLLECTION</Button>
         <div className="hold"></div>
-        <div>{`${col.count === 0 ? 0 : page * ONE_PAGE + 1} - ${Math.min((page + 1) * ONE_PAGE, col.count)} of ${
-          col.count
-        }`}</div>
+        <div>{`${max === 0 ? 0 : page * ONE_PAGE + 1} - ${Math.min((page + 1) * ONE_PAGE, max)} of ${max}`}</div>
         <Button size="small" disabled={page === 0} onClick={getPrevPage}>
           {'<'}
         </Button>
-        <Button size="small" disabled={(page + 1) * ONE_PAGE > col.count} onClick={getNextPage}>
+        <Button size="small" disabled={(page + 1) * ONE_PAGE >= max} onClick={getNextPage}>
           {'>'}
         </Button>
         <Segmented
@@ -190,17 +222,22 @@ function CollectionDetail({
           <CollectionEmpty></CollectionEmpty>
         ) : (
           <div className="colList">
-            {docList.map((item, index) => (
-              <ColListItem
-                dbName={DbName}
-                colName={colName}
-                key={item._id}
-                obj={item}
-                onDelete={(id) => {
-                  handleDelete(id)
-                }}
-              />
-            ))}
+            {renderedList.map((item, index) => {
+              return (
+                <>
+                  <LazyComponet callBack={renderMore} triggerOnce={false} />
+                  <ColListItem
+                    dbName={DbName}
+                    colName={colName}
+                    key={item._id}
+                    obj={item}
+                    onDelete={(id) => {
+                      handleDelete(id)
+                    }}
+                  />
+                </>
+              )
+            })}
           </div>
         )}
       </div>

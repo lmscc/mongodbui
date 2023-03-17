@@ -1,0 +1,32 @@
+.search
+  flex 1
+  position relative 
+  .input
+    letter-spacing: 1px;
+    width: 100%
+    ::placeholder
+      color: gray
+  .tip
+    z-index: 1
+    top 30px
+    left: 10px
+    position: absolute
+    pointer-events: none
+    font-size: 14px
+    >div 
+      display: inline-block
+    .hiddenDiv
+      visibility: hidden
+    .tipContent
+      pointer-events: all
+      width 200px
+      background: white
+      border: 1px solid gray
+      padding: 5px
+    .activeOption
+      background: #e8ebf2
+    .option 
+      &:hover
+        background: rgb(238, 238, 238)
+      .hightlight
+        color: #00a35c

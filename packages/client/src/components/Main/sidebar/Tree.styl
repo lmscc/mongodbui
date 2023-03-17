@@ -1,0 +1,61 @@
+.tree
+  cursor: pointer
+  .normal-icon
+    margin-right 10px
+  .selected
+    background: #e3fcf7 !important
+    color:#00684a 
+    position relative
+    .name
+      font-weight 600
+    &::before
+      content:''
+      position: absolute
+      left -5px
+      height 40px
+      width 5px
+      background: #00684a 
+    .triangle::after
+      border-top : 6px solid #00684a !important
+  .content .item,.title
+    &:hover
+      .round-icon
+        opacity: 1
+  .name
+    width calc(100% - 80px)
+    overflow hidden
+    text-overflow: ellipsis
+  .selected .round-icon
+    opacity: 1
+  .title
+    display: flex
+    align-items: center
+    .triangle
+      height 100%
+      width 20px
+      display: flex
+      align-items: center
+      justify-content: center
+      transform: rotate(-90deg)
+      transition:0.3s all 
+      flex-shrink: 0
+      &::after
+        content: ''
+        width 0
+        height 0
+        border: 6px solid transparent;
+        border-top 6px solid #000
+        transform: translateY(+3px)
+      // border-left: 6px solid black;
+    .tri-down
+      transform: rotate(0deg)
+    &:hover
+      background: #e8edeb
+  
+  .content
+    .item
+      padding-left 20px
+      display: flex
+      align-items: center
+      &:hover
+        background: #e8edeb

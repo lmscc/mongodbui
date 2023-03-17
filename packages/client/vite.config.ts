@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import inspect from 'vite-plugin-inspect'
+import removeConsole from 'vite-plugin-remove-console'
 import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), inspect()],
+  plugins: [react(), inspect(), removeConsole()],
   base: '/mongodbui/',
   server: {
     proxy: {
       '^/api/.*': {
         target: 'http://localhost:3016',
+        // target: 'http://116.205.239.59:3016/mongodbui',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

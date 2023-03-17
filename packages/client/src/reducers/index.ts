@@ -1,6 +1,7 @@
 import { combineReducers, createStore } from 'redux'
 import { useSelector } from 'react-redux'
 import type { dbMap } from '@/global/types'
+import { handleChangeActive, handleDrop } from './handlers'
 export interface pageConfig {
   id: number
   dbName: string
@@ -8,9 +9,15 @@ export interface pageConfig {
   activeSub: string
   docList: any[]
 }
+interface uriConfig {
+  hostName: string
+  port: string
+  userName: string
+  psd: string
+}
 interface stateType {
+  uriConfig: null | uriConfig
   isLogin: boolean
-
   dbAndCol: null | dbMap
   activeDb: null | string
   activeCol: null | string
@@ -19,7 +26,15 @@ interface stateType {
   activeColPageId: number
   showLoading: boolean
 }
+const arr = JSON.parse(localStorage.getItem('recent')) || []
 const defState: stateType = {
+  uriConfig:
+    arr.length === 0
+      ? {
+          hostName: location.hostname,
+          port: 27017
+        }
+      : arr[0],
   isLogin: false,
 
   dbAndCol: null,
@@ -79,29 +94,9 @@ export const selectByFn = <T>(fn: (state: stateType) => any) => {
   })
 }
 // type dispatch = (type: any, payload: Partial<stateType>) => void
-export const dispatch = (type: '' | 'changeList' | 'changeActive' | 'init', payload: Partial<stateType>) => {
-  const { colPageList, activeDb, activeCol } = payload
-  if (type === 'changeList') {
-    // 当改变list的时候，比如新增，删除，重新复制active
-    // const { activeColPageId } = store.getState().main
-    // const activePage = colPageList.find((item) => activeColPageId === item.id)
-    payload.activeDb = activeDb
-    payload.activeCol = activeCol
-  }
-  if (type === 'changeActive') {
-    // 当db，col改变的时候，把转态同步到active的page上
-    const { colPageList, activeColPageId } = store.getState().main
-    const activePage = colPageList.find((item) => activeColPageId === item.id)
-    if (activePage) {
-      if (activeCol) {
-        activePage.colName = activeCol
-      }
-      if (activeDb) {
-        activePage.dbName = activeDb
-      }
-    }
-    payload.colPageList = [...colPageList]
-  }
+export const dispatch = (type: '' | 'changeList' | 'changeActive' | 'init' | 'drop', payload: Partial<stateType>) => {
+  handleDrop(type, store, payload)
+  handleChangeActive(type, store, payload)
   store.dispatch({
     type,
     payload

@@ -1,61 +1,40 @@
 import './main.styl'
 import DataBases from '@/components/Main/database/DataBases'
 import DbDetail from '@/components/Main/database/DbDetail'
-import { Outlet } from 'react-router-dom'
-import Modals from '@/components/modals/index'
-import SideBar from '@/components/SideBar/SideBar'
 import type { RouteObject } from 'react-router-dom'
 import store, { dispatch } from '@/reducers'
-import { getDbAndCollections, login } from '@/request'
+import { login } from '@/request'
 import CollectionPage from '@/components/Main/collection/CollectionPage'
 import { KeepAlive } from 'react-activation'
-const ensureDbAndCol = (() => {
-  let promise: any = null
-  return () => {
-    if (!store.getState().main.dbAndCol) {
-      if (promise === null) {
-        promise = getDbAndCollections().then((result) => [
-          dispatch('', {
-            dbAndCol: result[0]
-          })
-        ])
-        return promise
-      } else {
-        return promise
-      }
-    }
-  }
-})()
-
+import Layout from '@/components/Layout/index'
+import { HeadContent, BodyContent } from '@/components/Main/sidebar/index'
+import { ensureDbAndCol } from '@/request/ensure'
 const mainRoutes: RouteObject = {
   path: '/main',
   loader: async () => {
     console.log('main-loader')
 
-    const isLogin = store.getState().main.isLogin
-    if (!isLogin) {
-      const { status } = await login('')
-      if (status === 'err') {
-        location.hash = '#/login'
-        return
-      } else {
-        dispatch('', {
-          isLogin: true
-        })
+    try {
+      const isLogin = store.getState().main.isLogin
+      if (!isLogin) {
+        const res = await login('')
+        if (res) {
+          dispatch('', {
+            isLogin: true
+          })
+        } else {
+          location.hash = '#/login'
+        }
       }
+      const result = await ensureDbAndCol()
+      return true
+    } catch (err) {
+      console.log(err)
+      location.hash = '#/login'
     }
-    await ensureDbAndCol()
-    return true
+    return false
   },
-  element: (
-    <div className="main_wrap">
-      <SideBar />
-      <div className="main">
-        <Outlet></Outlet>
-      </div>
-      <Modals />
-    </div>
-  ),
+  element: <Layout sideBarHead={<HeadContent />} sideBarBody={<BodyContent />} />,
   children: [
     {
       index: true,

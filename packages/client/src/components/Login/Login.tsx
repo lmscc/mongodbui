@@ -1,74 +1,124 @@
-import { login } from '@/request'
-import { Button, Input } from 'antd'
-import { type ChangeEvent, useState } from 'react'
-import store from '@/global/index'
-
-import './Login.styl'
 import { dispatch } from '@/reducers'
-import { useNavigate } from 'react-router-dom'
+import { login } from '@/request'
+import { useNav } from '@/router/navigate'
+import { Input, Form, Button } from 'antd'
+import { type ChangeEvent } from 'react'
+import styles from './Login.module.styl'
+import { useLocalStorageState } from 'ahooks'
+import { select } from '@/reducers/index'
+import { ensureDbAndCol } from '@/request/ensure'
+function headZero(num) {
+  const str = String(num)
+  if (str.length === 1) {
+    return '0' + str
+  } else {
+    return str
+  }
+}
 export default function Login() {
-  const [psd, setPsd] = useState('')
-  const [passwordVisible, setpasswordVisible] = useState(false)
-  const navigate = useNavigate()
-  function log() {
-    // if (!/.{10,20}$/.test(psd)) {
-    //   store.messageApi.open({
-    //     type: 'error',
-    //     content: '长度需在10-20内'
-    //   })
-    //   return
-    // }
-    dispatch('', {
-      showLoading: true
-    })
-    login(psd)
-      .then((res) => {
-        if (res.status === 'ok' || res.status === 'isLogin') {
-          navigate('/main')
-          dispatch('', {
-            isLogin: true
-          })
-          if (res.status === 'ok') {
-            localStorage.setItem('jwt', res.jwt)
-          }
-        } else {
-          store.messageApi.open({
-            type: 'error',
-            content: '密码错误'
-          })
-        }
+  const [recentList, setRecentList] = useLocalStorageState('recent', {
+    defaultValue: []
+  })
+  const { uriConfig } = select('uriConfig')
+  const { hostName, port, userName, psd } = uriConfig
+  // const [hostName, setHostName] = useState('localhost')
+  // const [port, setPort] = useState('27017')
+  // const [userName, setUserName] = useState('')
+  // const [psd, setPsd] = useState('')
+  const { goDatabases } = useNav()
+  async function handleLogin() {
+    try {
+      dispatch('', {
+        showLoading: true
       })
-      .finally(() => {
+      let uri
+      if (!userName || !psd) {
+        uri = `mongodb://${hostName}:${port}`
+      } else {
+        uri = `mongodb://${userName}:${psd}@${hostName}:${port}`
+      }
+      await login(uri)
+      await ensureDbAndCol()
+      const date = new Date()
+
+      setRecentList([
+        {
+          hostName,
+          port,
+          userName,
+          psd,
+          host: `${hostName}:${port}`,
+          timestamp: Date.now(),
+          time: `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${headZero(
+            date.getHours()
+          )}:${headZero(date.getMinutes())}`
+        },
+        ...recentList
+      ])
+      goDatabases()
+    } finally {
+      setTimeout(() => {
         dispatch('', {
           showLoading: false
         })
-      })
+      }, 500)
+    }
   }
   return (
-    <div className="login_page">
-      <div className="block">
-        <h1 className="name">mongodbUI</h1>
-        <div className="psd">
-          <Input.Password
-            placeholder="Password"
+    <div className={styles.loginPage}>
+      <div className={styles.block}>
+        <div className={styles.uri}>
+          <span className={styles.protocol}>{'mongodb://'}</span>
+          {userName && psd && <span>{userName + ':' + psd}</span>}
+          {userName && psd && <span>@</span>}
+          <span>{hostName + ':' + port}</span>
+        </div>
+        <Form.Item label={'hostName'}>
+          <Input
+            value={hostName}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              uriConfig.hostName = e.target.value
+              dispatch('', {
+                uriConfig: { ...uriConfig }
+              })
+            }}
+          ></Input>
+        </Form.Item>
+        <Form.Item label={'port'}>
+          <Input
+            value={port}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              uriConfig.port = e.target.value
+              dispatch('', {
+                uriConfig: { ...uriConfig }
+              })
+            }}
+          ></Input>
+        </Form.Item>
+        <Form.Item label={'username'}>
+          <Input
+            value={userName}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              uriConfig.userName = e.target.value
+              dispatch('', {
+                uriConfig: { ...uriConfig }
+              })
+            }}
+          ></Input>
+        </Form.Item>
+        <Form.Item label={'password'}>
+          <Input
             value={psd}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
-              setPsd(e.target.value.trim())
+              uriConfig.psd = e.target.value
+              dispatch('', {
+                uriConfig: { ...uriConfig }
+              })
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                log()
-              }
-            }}
-            maxLength={20}
-            visibilityToggle={{
-              visible: passwordVisible,
-              onVisibleChange: setpasswordVisible
-            }}
-          ></Input.Password>
-        </div>
-        <Button className="btn" type="primary" onClick={log}>
-          Login
+          ></Input>
+        </Form.Item>
+        <Button onClick={handleLogin} type="primary">
+          Connect
         </Button>
       </div>
     </div>

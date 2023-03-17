@@ -1,5 +1,18 @@
-global.ts 会被当做 global.d.ts,但是在添加了可执行代码后就会失去全局的的效果
+### mongodb图形界面
 
-1.  使用 global.d.ts,类型可以全局使用,不能实现类型校验
-    使用 global.ts,类型不可全局使用,需要引入,可实现类型校验
-2.  如果 include 包括了一个根目录外的文件,那么配置的 paths 会失效
+`react` `redux` `react-router` `ant-design`
+
+**简介**：
+
+使用vite构建的，仿造mongodb compass的数据库图形界面，实现对数据库，集合，文档的增删改查
+
+**技术栈**：
+- 前端：react redux react-router antd axios stylus
+- 后端：nodejs express mongodb 
+
+**要点**:
+- 封装组件对文档对象进行增删改
+- 编写脚本将数据库api转化为http接口代码，axios请求代码
+**运行**
+服务器 server下 npm run dev
+客户端 client下 npm run dev
