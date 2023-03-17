@@ -1,0 +1,58 @@
+.colection
+  top calc(25px + 75px)
+  bottom 20px
+  height: 100%
+  display: flex
+  flex-direction: column
+  .title
+    display: flex
+    align-items: center
+    .dbName
+      font-size: 25px
+      color #00684a
+      &:hover
+        text-decoration: underline
+        cursor pointer
+    .colName 
+      font-size: 20px
+    .hold
+      flex: 1
+    .msg
+      display: flex
+      .flexbox
+        display: flex
+        flex-direction: column
+        align-items: center
+        margin-left 20px
+        .value
+          font-size: 25px
+          color #00684a
+  .search
+    display flex
+    border 1px solid #e8edeb
+    padding 10px
+    margin-bottom 10px
+    button 
+      margin 0 10px
+  .operation
+    display flex
+    align-items: center
+    padding: 10px 0px;
+    .hold 
+      flex: 1
+    button 
+      margin 0 10px
+  .col_main
+    flex: 1
+    overflow: auto
+    display: flex
+    justify-content: center
+    align-items: center
+    min-height: 400px
+    .colList
+      will-change: transform
+      height: 100%
+      width 100%
+      overflow: auto
+      padding 5px 20px
+

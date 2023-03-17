@@ -1,0 +1,57 @@
+$max-height=250px
+$font-family=Microsoft YaHei
+.area
+  // font-family: $font-family
+  width:100%
+  max-height: $max-height
+  border: 2px solid transparent
+  outline: none;
+  resize: none;
+  background: transparent
+
+.input_normal
+  caret-color: transparent;
+.input_editable
+  &:focus
+    border: 2px solid #0498ec 
+    border-radius: 2px
+    box-shadow 0 0 3px #0498ec
+//由div撑大内容
+.input_wrap
+  // visibility:hidden
+  position:relative
+  max-height:$max-height
+  min-width: 20px
+  .area
+    visibility:visible
+    position:absolute
+    word-break: break-all;
+    ::-webkit-scrollbar 
+      width : 0px; 
+    &:hover
+      ~.tips
+        visibility: visible
+      
+  .hiddenDiv
+    visibility: hidden
+    // font-family:$font-family
+    max-height: $max-height
+    word-break: break-all;
+    overflow: auto
+    // margin-right 10px
+    // letter-spacing: 1px//让hiddenDiv总是比textarea更大防止出现滚动条
+    border: 2px solid transparent
+  .tips
+    visibility: hidden
+    position: absolute
+    width 100%
+    z-index: 10
+    border 1px solid gray
+    background-color: white 
+    max-height: 100px
+    overflow: auto
+    &:hover
+      visibility: visible
+    .tips_item
+      &:hover
+        background: #f8f8f8

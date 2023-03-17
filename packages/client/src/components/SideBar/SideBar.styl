@@ -1,0 +1,47 @@
+.sideBar
+  height 100%
+  width 300px
+  .head
+    background: #00684a
+    display: flex
+    align-items: center
+    height 75px
+    padding 0 20px
+    color: white
+    font-size: 20px
+    width 100%
+    .logo
+      height 60%
+    .host 
+      flex: 1
+    i 
+      font-size: 30px
+      &:hover
+        cursor: pointer
+  >.content
+    padding 10px
+    height calc(100% - 75px)
+    // padding 20px
+    background: #f9fbfa
+    overflow: auto;
+    .dbs
+      display: flex
+      align-items: center
+      height 40px
+      padding 10px
+      cursor pointer
+      &:hover
+        background: #e8edeb
+      .iconfont
+        margin-right: 10px;
+      .name
+        flex: 1
+      .icon-jia
+        border-radius: 50%
+        padding 5px
+        cursor: pointer
+        &:hover
+          background: #e8edeb
+    .selected
+      background: #e3fcf7
+      color: #00684a

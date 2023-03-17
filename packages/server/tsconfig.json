@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    /* Projects */
+    "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "commonjs", /* Specify what module code is generated. */
+    "sourceMap": true, /* Create source map files for emitted JavaScript files. */
+    "outDir": "./build/js", /* Specify an output folder for all emitted files. */
+    "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "typeRoots": [
+      "../@types"
+    ],
+    "resolveJsonModule": true
+  },
+  "ts-node": {
+    "files": true
+  },
+  // "include": [
+  //   "./http/index.ts",
+  //   //加入这个可以使tsc成功,但是ts-node会报错 Cannot find name 'doc'
+  //   "../global.ts"
+  // ],
+}

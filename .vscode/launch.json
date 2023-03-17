@@ -1,0 +1,51 @@
+{
+  "configurations": [
+    {
+      "name": "Launch via NPM",
+      "request": "launch",
+      "runtimeArgs": [
+        "a.js"
+      ],
+      "cwd": "D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/client",
+      "runtimeExecutable": "node",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "服务器",
+      "request": "launch",
+      "runtimeArgs": [
+        "index",
+      ],
+      "cwd": "${workspaceFolder}/packages/server/http",
+      "runtimeExecutable": "ts-node",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
+      "name": "自动脚本",
+      "request": "launch",
+      "runtimeArgs": [
+        "index.ts",
+      ],
+      "cwd": "${workspaceFolder}/packages/server/auto",
+      "runtimeExecutable": "ts-node",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+
+  ]
+}

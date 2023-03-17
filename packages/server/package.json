@@ -1,0 +1,28 @@
+{
+  "name": "@monui/server",
+  "dependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/generator": "^7.20.7",
+    "@babel/parser": "^7.20.7",
+    "@babel/template": "^7.20.7",
+    "@babel/traverse": "^7.20.12",
+    "@types/babel-traverse": "^6.25.7",
+    "@types/babel__core": "^7.20.0",
+    "@types/express": "^4.17.14",
+    "@types/jsonwebtoken": "^9.0.1",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mixi-pack": "^1.0.0",
+    "mongodb": "^4.12.1",
+    "mongoose": "^6.7.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && ncc build ./build/js/http/index.js -o ./build/dist -m",
+    "removeOld": "fse remove D:/桌面/serverpack/mongodbUI/index.js",
+    "move": "fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/server/build/dist D:/桌面/serverpack/mongodbUI",
+    "buildAndMove": "pnpm run build && pnpm run removeOld && pnpm run move"
+  },
+  "type": "commonjs"
+}

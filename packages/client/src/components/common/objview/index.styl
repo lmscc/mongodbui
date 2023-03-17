@@ -1,0 +1,80 @@
+$max-height = 500px
+$block-height = 40px
+.key_value
+  display: flex
+  align-items: flex-start
+  // margin-left 20px
+  padding-right 10px
+  font-size: 0.8em
+  &:hover
+    background:  #e8edeb
+    // textarea
+    //   background: #e8edeb
+    .show
+      visibility:visible !important
+    .none
+      display: none
+  .key_wrap
+    display: flex
+    .delete
+      visibility: hidden
+      padding 0 10px
+      color: #3d4f58
+      display: flex
+      justify-content: center
+      align-items: center
+      &:hover
+        cursor: pointer
+    .count
+      font-weight bold
+      color: #889397
+      display: flex
+      align-items: center
+    .key 
+      color #3d4f58
+      // ::-webkit-scrollbar 
+      //   width : 0px; 
+    .colon
+      margin-right 7px
+    .count 
+      .add
+        visibility: hidden
+        &:hover
+          cursor: pointer
+    .fold_btn
+      width 10px
+      cursor: pointer
+    .fold
+      transform: rotate(90deg)
+    .hidden
+      visibility: hidden
+  .value
+    // height 21px
+    // overflow: auto
+    flex: 1
+  .data_type
+    width 50px
+    color #9aa4a7
+.key_value_deleted
+  background: #ffeae5
+  &:hover
+    background: #ffcdc7
+.wrap 
+  overflow: auto
+  padding 10px 0px
+  max-height: $max-height - $block-height
+.block
+  height $block-height
+  width 100%
+  display: flex
+  padding-left 20px
+  align-items: center
+  .hold
+    flex: 1
+  .btn
+    margin-right 10px
+.normal
+  background-color: #e8edeb
+.modified
+  background-color: #ffec9e
+  color:#4c2100
