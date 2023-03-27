@@ -14,8 +14,10 @@ function default_1(arr) {
         apis +=
             `
 dbRouter.${method}('/${fnName}',(req,res)=>{
+  const {id:sessionId} = req.session
+  const client = clientMap[sessionId]
   ${params.length ? `const {${params.map(item => item[0]).join(',')}} = req.body` : ''}
-  handleResult(DB.${fnName}(${params.map(item => item[0]).join(',')}),res)
+  handleResult(client.${fnName}(${params.map(item => item[0]).join(',')}),res)
 })
 `;
     }

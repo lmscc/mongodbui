@@ -1,15 +1,18 @@
 import { message, ConfigProvider } from 'antd'
-import store from '@/global'
-import { select } from '@/reducers/index'
+import { Provider } from 'react-redux'
+
+import store, { select } from '@/reducers/index'
 import { RouterProvider } from 'react-router-dom'
 import { GlobalLoading } from '@/components/common/Loading'
+import globalStore from '@/global/index'
 import { AliveScope } from 'react-activation'
 import router from './router'
+import Modals from './components/modals'
 function App() {
   const { showLoading } = select('showLoading')
 
   const [messageApi, contextHolder] = message.useMessage()
-  store.messageApi = messageApi
+  globalStore.messageApi = messageApi
 
   return (
     <ConfigProvider
@@ -19,15 +22,20 @@ function App() {
         }
       }}
     >
+      <Modals />
       <AliveScope>
-        <div className="App">
-          {contextHolder}
-          {showLoading ? <GlobalLoading /> : null}
-          <RouterProvider router={router} />
-        </div>
+        {contextHolder}
+        {showLoading ? <GlobalLoading /> : null}
+        <RouterProvider router={router} />
       </AliveScope>
     </ConfigProvider>
   )
 }
 
-export default App
+export default function StoreWrap() {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
+}

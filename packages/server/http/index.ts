@@ -1,41 +1,55 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
+import session from 'express-session'
 
 import '../utils/expandGlobal'
 import loginRouter from './login-router'
 import dbRouter from './db-router'
-const app = express()
+function startServer(PORT) {
+  const app = express()
 
-const PORT = 3016
+  app.use(
+    session({
+      name: 'session-id-mongodbui',
+      secret: '12345-67890',
+      saveUninitialized: false,
+      resave: false,
+      cookie: {
+        httpOnly: false
+      },
+      maxAge: 3 * 24 * 3600 * 1000
+    })
+  )
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-
-app.use((req, res, next) => {
-  console.log(req.url)
-  //  /question -> /
-  req.url = req.url.replace(/^\/mongodbui$/, '/')
-  //  /question/---  ->/---
-  req.url = req.url.replace(/^\/mongodbui/, '')
-  next()
-})
-
-app.use(
-  express.static(path.resolve(__dirname, './client'), {
-    maxAge: 10 * 24 * 60 * 60 * 1000
+  app.use((req, res, next) => {
+    console.log(req.url)
+    //  /question -> /
+    req.url = req.url.replace(/^\/mongodbui$/, '/')
+    //  /question/---  ->/---
+    req.url = req.url.replace(/^\/mongodbui/, '')
+    next()
   })
-)
 
-app.use(loginRouter)
+  app.use(
+    express.static(path.resolve(__dirname, '../client'), {
+      maxAge: 10 * 24 * 60 * 60 * 1000
+    })
+  )
 
-app.use(dbRouter)
+  app.use(loginRouter)
 
-app.get('*', (req, res) => {
-  res.setHeader('Cache-control', 'no-cache')
-  res.sendFile(path.resolve(__dirname, './client/index.html'))
-})
+  app.use(dbRouter)
 
-app.listen(PORT, () => {
-  console.log('run in ' + PORT)
-})
+  app.get('*', (req, res) => {
+    res.setHeader('Cache-control', 'no-cache')
+    res.sendFile(path.resolve(__dirname, '../client/index.html'))
+  })
+
+  app.listen(PORT, () => {
+    console.log('run in ' + PORT)
+  })
+}
+export default startServer

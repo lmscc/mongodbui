@@ -1,5 +1,7 @@
+import { type MessageInstance } from 'antd/es/message/interface'
+
 const store: {
-  messageApi: any
+  messageApi: MessageInstance
   navigate: any
 } = {
   messageApi: null,

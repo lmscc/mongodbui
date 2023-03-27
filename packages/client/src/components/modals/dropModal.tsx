@@ -44,18 +44,18 @@ export default function DropModal({
 
           dbAndColNew[dbName].collections = dbAndColNew[dbName].collections.filter((item) => item.name !== colName)
 
-          dispatch('', {
+          dispatch('drop', {
             dbAndCol: dbAndColNew
           })
-          if (dbName === activeDb && colName === activeCol) {
-            location.hash = `#/main/${activeDb}`
-          }
+          // if (dbName === activeDb && colName === activeCol) {
+          //   location.hash = `#/main/${activeDb}`
+          // }
         })
     } else {
       dropDatabase(dbName)
         .then((res) => {
           delete dbAndCol[dbName]
-          dispatch('', {
+          dispatch('drop', {
             dbAndCol: JSON.parse(JSON.stringify(dbAndCol))
           })
         })

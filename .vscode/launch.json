@@ -1,6 +1,20 @@
 {
   "configurations": [
     {
+      "name": "electron",
+      "request": "launch",
+      "cwd": "D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/electron",
+      "runtimeArgs": [
+        "run-script",
+        "dev"
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
       "name": "Launch via NPM",
       "request": "launch",
       "runtimeArgs": [
@@ -24,9 +38,10 @@
       "name": "服务器",
       "request": "launch",
       "runtimeArgs": [
+        "-T",
         "index",
       ],
-      "cwd": "${workspaceFolder}/packages/server/http",
+      "cwd": "${workspaceFolder}/packages/server",
       "runtimeExecutable": "ts-node",
       "skipFiles": [
         "<node_internals>/**"
@@ -37,7 +52,8 @@
       "name": "自动脚本",
       "request": "launch",
       "runtimeArgs": [
-        "index.ts",
+        "--transpile-only",
+        "index.ts"
       ],
       "cwd": "${workspaceFolder}/packages/server/auto",
       "runtimeExecutable": "ts-node",

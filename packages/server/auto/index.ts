@@ -19,29 +19,29 @@ const ast = parser.parse(sourceCode.toString(), {
   plugins: ['jsx', 'typescript']
 })
 let arr = []
-let excludeArr = ['isDbExist']
+let excludeArr = ['connect']
 function traverseFn() {
   return {
     visitor: {
-      FunctionDeclaration(path) {
-        if (path.parentPath.isExportNamedDeclaration() && !excludeArr.includes(path.node.id.name)) {
+      ClassMethod(path) {
+        if ( !excludeArr.includes(path.node.key.name)) {
           //@ts-ignore
           let arrItem: arrItem = {}
-          arrItem.fnName = path.node.id.name
+          arrItem.fnName = path.node.key.name
           arrItem.params = path.node.params.map(node =>
             [node.name, resolveType(node?.typeAnnotation?.typeAnnotation)]
           )
           let method = arrItem.fnName.match(/.*?(?=[A-Z])/)[0]
           arrItem.method = (method === 'get' ? 'get' : 'post')
-          arrItem.type = path.parentPath.node.leadingComments &&
-            path.parentPath.node.leadingComments[0].value
+          arrItem.type = path.node.leadingComments &&
+            path.node.leadingComments[0].value
           arr.push(arrItem)
         }
       },
     },
     post() {
       handleReq(arr)
-      handleDoc(arr)
+      // handleDoc(arr)
       handleHttp(arr)
     }
   }

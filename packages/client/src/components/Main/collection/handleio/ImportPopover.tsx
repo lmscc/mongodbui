@@ -1,6 +1,6 @@
 import { Popover, Modal, Button } from 'antd'
 import { useState } from 'react'
-import ImportDoc from './modals/ImportDoc'
+import ImportDoc from './ImportDoc'
 export default function ImportPopover() {
   const [showImportFileModal, setShowImportFileModal] = useState(false)
   const [showImportDocModal, setShowImportDocModal] = useState(false)
@@ -20,7 +20,7 @@ export default function ImportPopover() {
         open={open}
         content={
           <div className="popover_content">
-            <div
+            {/* <div
               className="item"
               onClick={() => {
                 setOpen(false)
@@ -28,7 +28,7 @@ export default function ImportPopover() {
               }}
             >
               Import file
-            </div>
+            </div> */}
             <div
               className="item"
               onClick={() => {

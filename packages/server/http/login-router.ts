@@ -1,76 +1,53 @@
 // @ts-nocheck
-import jwt from 'jsonwebtoken'
 import express from 'express'
 
-const secret = 'qdwqfqfewfewfe'
-const invalidJwtMap = {}
+import Client from '../db/index'
+import clientMap from './clientMap'
 const loginRouter = express.Router()
-loginRouter.use((req, res, next) => {
-  if (req.headers.hasOwnProperty('token')) {
-    req.token = req.headers.token
-    if (invalidJwtMap[req.token]) {
-      next()
-    }
-    jwt.verify(req.headers.token, secret, function (err, decoded) {
-      if (decoded && decoded.isLogin) {
-        req.isLogin = true
-      }
-      next()
+
+loginRouter.post('/login', (req, res, next) => {
+  const { session } = req
+  const { isLogin } = session
+  if (isLogin) {
+    res.send({
+      data: 'isLogin',
+      err: null
     })
   } else {
-    next()
+    const { uri } = req.body
+    const instance = new Client()
+    instance
+      .connect(uri)
+      .then(() => {
+        clientMap[session.id] = instance
+        session.isLogin = true
+        res.send({
+          err: null,
+          data: 'isLogin'
+        })
+      })
+      .catch((err) => {
+        res.send({
+          err: err.message || err,
+          data: null
+        })
+      })
   }
 })
 loginRouter.post('/logout', (req, res, next) => {
-  invalidJwtMap[req.token] = true
+  const { session } = req
+  session.isLogin = false
+  const { id } = session
+  clientMap[id] = null
   res.send({
     err: null,
-    data: 'ok'
+    data: 'logout'
   })
 })
-loginRouter.post('/login', (req, res, next) => {
-  if (req.isLogin) {
-    res.json({
-      err: null,
-      data: {
-        status: 'isLogin'
-      }
-    })
-    next()
-  } else {
-    const { psd } = req.body
-    if (psd === 'lms156493251') {
-      const token = jwt.sign(
-        {
-          isLogin: 1
-        },
-        secret,
-        {
-          expiresIn: '2d'
-        }
-      )
-      res.json({
-        err: null,
-        data: {
-          status: 'ok',
-          jwt: token
-        }
-      })
-    } else {
-      res.json({
-        err: null,
-        data: {
-          status: 'err'
-        }
-      })
-    }
-  }
-})
 loginRouter.use((req, res, next) => {
-  if (!req.isLogin) {
-    res.json({
-      err: 'token 不存在或已过时',
-      data: null
+  if (!req.session.isLogin) {
+    res.send({
+      err: 'no login'
     })
   } else {
     next()

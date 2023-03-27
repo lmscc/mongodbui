@@ -143,7 +143,7 @@ function Item({
             }
             onRefresh()
           }}
-          style={{ fontWeight: type === key ? 'bold' : '' }}
+          style={{ fontWeight: type === key ? '' : '' }}
         >
           {key}
         </div>
@@ -201,7 +201,6 @@ function Item({
           <Input
             lineHeight={lineHeight}
             fontSize={13}
-            fontWeight={550}
             value={key}
             editable={!isArrayItem && !isObjectId && isEditable}
             fitWidth

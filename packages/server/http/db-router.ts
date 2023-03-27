@@ -1,6 +1,6 @@
-// @ts-nocheck
+//@ts-nocheck
 import express from 'express'
-import * as DB from '../db/index'
+import clientMap from './clientMap'
 const dbRouter = express.Router()
 
 function handleResult(p, res) {
@@ -35,52 +35,80 @@ function handleResult(p, res) {
 
 // autoStart
 dbRouter.get('/getDbAndCollections', (req, res) => {
-  handleResult(DB.getDbAndCollections(), res)
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
+
+  handleResult(client.getDbAndCollections(), res)
 })
 
 dbRouter.post('/createDatabase', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName } = req.body
-  handleResult(DB.createDatabase(dbName, colName), res)
+  handleResult(client.createDatabase(dbName, colName), res)
 })
 
 dbRouter.post('/dropDatabase', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName } = req.body
-  handleResult(DB.dropDatabase(dbName), res)
+  handleResult(client.dropDatabase(dbName), res)
 })
 
 dbRouter.post('/createColletion', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName } = req.body
-  handleResult(DB.createColletion(dbName, colName), res)
+  handleResult(client.createColletion(dbName, colName), res)
 })
 
 dbRouter.post('/dropCollection', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName } = req.body
-  handleResult(DB.dropCollection(dbName, colName), res)
+  handleResult(client.dropCollection(dbName, colName), res)
+})
+
+dbRouter.post('/findCollection', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
+  const { dbName, colName } = req.body
+  handleResult(client.findCollection(dbName, colName), res)
 })
 
 dbRouter.post('/addDocument', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName, msg } = req.body
-  handleResult(DB.addDocument(dbName, colName, msg), res)
+  handleResult(client.addDocument(dbName, colName, msg), res)
 })
 
 dbRouter.post('/deleteDocument', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName, id } = req.body
-  handleResult(DB.deleteDocument(dbName, colName, id), res)
+  handleResult(client.deleteDocument(dbName, colName, id), res)
 })
 
 dbRouter.post('/findDocumentById', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName, id } = req.body
-  handleResult(DB.findDocumentById(dbName, colName, id), res)
+  handleResult(client.findDocumentById(dbName, colName, id), res)
 })
 
 dbRouter.post('/findDocumnet', (req, res) => {
-  const { dbName, colName, skip, limit, condition } = req.body
-  handleResult(DB.findDocumnet(dbName, colName, skip, limit, condition), res)
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
+  const { dbName, colName, skip, limit, condition, sort } = req.body
+  handleResult(client.findDocumnet(dbName, colName, skip, limit, condition, sort), res)
 })
 
 dbRouter.post('/updateDocument', (req, res) => {
+  const { id: sessionId } = req.session
+  const client = clientMap[sessionId]
   const { dbName, colName, id, update } = req.body
-  handleResult(DB.updateDocument(dbName, colName, id, update), res)
+  handleResult(client.updateDocument(dbName, colName, id, update), res)
 })
 // autoEnd
 export default dbRouter

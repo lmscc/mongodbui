@@ -3,11 +3,10 @@ import { Input } from 'antd'
 
 import Tree from './Tree'
 import { createDB } from '../modals'
-import { logout } from '@/request/index'
 
 import './SideBar.styl'
-import logoUrl from '@/assets/logo.png'
-import { dispatch, select } from '@/reducers'
+
+import { select } from '@/reducers'
 import type { sidebarTreeItemType } from '@/global/types'
 import { useNav } from '@/router/navigate'
 
@@ -48,26 +47,10 @@ export default function SideBar() {
       goDb(arr[0])
     }
   }
-  function logOut() {
-    localStorage.removeItem('jwt')
-    logout()
-      .then((res) => {
-        dispatch('init', {
-          isLogin: false
-        })
-        goLogin()
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+
   return (
     <div className="sideBar">
-      <div className="head">
-        <img src={logoUrl} alt="logo" className="logo" />
-        <div className="host">{location.hostname}:27017</div>
-        <i className="iconfont icon-dengchu" onClick={logOut}></i>
-      </div>
+      <div className="head"></div>
       <div className="content">
         <div className={'dbs ' + (activeDb == null && activeCol == null ? 'selected' : '')}>
           <i className="iconfont icon-shujuku normal-icon"></i>

@@ -56,7 +56,9 @@ export default function Input({
   const textRef = useRef<HTMLTextAreaElement>(null)
   const [line, setLine] = useState(1)
   const [isFold, setIsFold] = useState(true)
+  const [isSlice, setIsSlice] = useState(true)
   value = String(value)
+  value = isSlice && value.length > 100 ? value.slice(0, 100) : value
   function handleClick() {
     if (fitHeight) {
       if (isFold) {
@@ -114,6 +116,9 @@ export default function Input({
             width: fitWidth ? 'fit-content' : '',
             fontSize: fontSize + 'px',
             fontWeight
+          }}
+          onMouseEnter={() => {
+            setIsSlice(false)
           }}
         >
           <textarea

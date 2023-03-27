@@ -12,7 +12,9 @@
     "typeRoots": [
       "../@types"
     ],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "noEmitOnError": false
   },
   "ts-node": {
     "files": true
