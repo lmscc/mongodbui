@@ -1,7 +1,6 @@
 ### mongodb图形界面
 
 `react` `redux` `react-router` `ant-design`
- [icon:fa-github github](https://github.com/lmscc/mongodbui) [icon:fa-envira online](https://lmscc.top/mongodbui/#/login)
 
 **简介**：
 
