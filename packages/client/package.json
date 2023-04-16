@@ -11,10 +11,9 @@
     "preview": "vite preview",
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx --fix --quiet .",
     "move2electron": "fse remove ../electron/dist/client && fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet ./dist ../electron/dist/client",
-    
     "move2pack": "fse remove D:/桌面/serverpack/mongodbUI/client && fse copy --all --keepExisting --errorOnExist --dereference --preserveTimestamps --quiet D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/client/dist D:/桌面/serverpack/mongodbUI/client",
     "buildAndMove": "pnpm run build && pnpm run move2pack",
-    "deploy":"npm run buildAndMove && npm run -C D:\\桌面\\serverpack pushAndPull"
+    "deploy": "npm run buildAndMove && npm run -C D:\\桌面\\serverpack pushAndPull"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +31,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.1",
     "redux": "^4.2.0",
+    "rollup-plugin-visualizer": "^5.9.0",
     "util": "^0.12.5",
     "vite-plugin-inspect": "^0.7.16",
     "vite-plugin-remove-console": "^2.1.0"

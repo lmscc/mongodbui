@@ -149,13 +149,6 @@ export function dropCollection(dbName: string, colName: string) {
   })
 }
 
-export function findCollection(dbName: string, colName: string) {
-  return axios.post<any, collection>('/findCollection', {
-    dbName,
-    colName
-  })
-}
-
 export function addDocument(dbName: string, colName: string, msg: any) {
   return axios.post<
     any,

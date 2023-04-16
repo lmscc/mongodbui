@@ -6,13 +6,6 @@ export default function ImportPopover() {
   const [showImportDocModal, setShowImportDocModal] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const hide = () => {
-    setOpen(false)
-  }
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen)
-  }
   return (
     <>
       {' '}

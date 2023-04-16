@@ -1,7 +1,7 @@
 1.把父组件传来的 props 保存在 useState 中可能导致组件不更新 2.不要把一个组件 B 写在另一个组件 A 内部,这样每次组件 B 渲染时都会重新定义 B,会导致 B 组件渲染出来的 dom 总是会卸载
 不能实现 dom 的复用 
 3.子组件 useState(prop)会将一个 prop 变为自身的状态,可以实现自己维护,但当父级修改了 prop,子组件会重新执行,获取到的却是 useState 保存的值
-子级维护:自己维护,方便修改,但父级修改 prop 无效
+子级维护:自己维护,方便修改,但父级修改 prop 无效, 可以用一个effect来去修改state
 父级维护:父级需要向下传递方法,子级调用这个方法
 
 click event -> change activeDb,activeCol -> change side bar

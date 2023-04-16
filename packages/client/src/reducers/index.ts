@@ -27,12 +27,15 @@ interface stateType {
   showLoading: boolean
 }
 const arr = JSON.parse(localStorage.getItem('recent')) || []
+
 const defState: stateType = {
   uriConfig:
     arr.length === 0
       ? {
           hostName: location.hostname,
-          port: 27017
+          port: 27017,
+          userName: 'admin',
+          psd: 'password123'
         }
       : arr[0],
   isLogin: false,
@@ -47,6 +50,8 @@ const defState: stateType = {
 }
 let count = 0
 const reducer = function (state = defState, { type, payload }: { type: string; payload: Partial<stateType> }) {
+  handleDrop(type, store, payload)
+  handleChangeActive(type, store, payload)
   if (type === 'init') {
     return defState
   }
@@ -95,8 +100,6 @@ export const selectByFn = <T>(fn: (state: stateType) => any) => {
 }
 // type dispatch = (type: any, payload: Partial<stateType>) => void
 export const dispatch = (type: '' | 'changeList' | 'changeActive' | 'init' | 'drop', payload: Partial<stateType>) => {
-  handleDrop(type, store, payload)
-  handleChangeActive(type, store, payload)
   store.dispatch({
     type,
     payload

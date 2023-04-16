@@ -21,10 +21,6 @@ export default function Login() {
   })
   const { uriConfig } = select('uriConfig')
   const { hostName, port, userName, psd } = uriConfig
-  // const [hostName, setHostName] = useState('localhost')
-  // const [port, setPort] = useState('27017')
-  // const [userName, setUserName] = useState('')
-  // const [psd, setPsd] = useState('')
   const { goDatabases } = useNav()
   async function handleLogin() {
     try {

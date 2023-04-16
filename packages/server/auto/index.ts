@@ -19,7 +19,7 @@ const ast = parser.parse(sourceCode.toString(), {
   plugins: ['jsx', 'typescript']
 })
 let arr = []
-let excludeArr = ['connect']
+let excludeArr = ['connect','findCollection']
 function traverseFn() {
   return {
     visitor: {
@@ -40,9 +40,9 @@ function traverseFn() {
       },
     },
     post() {
-      handleReq(arr)
-      // handleDoc(arr)
-      handleHttp(arr)
+      // handleReq(arr)
+      handleDoc(arr)
+      // handleHttp(arr)
     }
   }
 }

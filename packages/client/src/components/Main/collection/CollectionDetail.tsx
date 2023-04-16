@@ -112,10 +112,9 @@ function CollectionDetail({
     setSearchConfig(defaultConfig)
     setPage(0)
     if (col.count > 0) {
-      setLoading(true)
       jumpPage(0)
     } else {
-      setRefreshDoc((pre) => (pre ^= 1))
+      setMax(0)
       curPage && (curPage.docList = [])
       dispatch('', {})
     }
@@ -150,7 +149,7 @@ function CollectionDetail({
 
   const [renderedCount, setRenderedCount] = useState(1)
   const renderedList = docList.slice(0, renderedCount)
-  function renderMore() {
+  function renderMore(...props) {
     setRenderedCount((pre) => {
       if (pre + 2 > docList.length) {
         return docList.length
@@ -162,6 +161,24 @@ function CollectionDetail({
   useEffect(() => {
     setRenderedCount(1)
   }, [page])
+
+  function mapDoc(...props) {
+    return renderedList.slice(...props).map((item, index) => {
+      return (
+        <>
+          <ColListItem
+            dbName={DbName}
+            colName={colName}
+            key={item._id}
+            obj={item}
+            onDelete={(id) => {
+              handleDelete(id)
+            }}
+          />
+        </>
+      )
+    })
+  }
   return (
     <div className="colection">
       <div className="title">
@@ -222,22 +239,9 @@ function CollectionDetail({
           <CollectionEmpty></CollectionEmpty>
         ) : (
           <div className="colList">
-            {renderedList.map((item, index) => {
-              return (
-                <>
-                  <LazyComponet callBack={renderMore} triggerOnce={false} />
-                  <ColListItem
-                    dbName={DbName}
-                    colName={colName}
-                    key={item._id}
-                    obj={item}
-                    onDelete={(id) => {
-                      handleDelete(id)
-                    }}
-                  />
-                </>
-              )
-            })}
+            {mapDoc(0, -1)}
+            <LazyComponet callBack={renderMore} />
+            {mapDoc(-1)}
           </div>
         )}
       </div>

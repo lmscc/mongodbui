@@ -65,7 +65,7 @@ export class KeyValueArr extends Array<KeyValueItem> {
 }
 // type KeyValueArrType = KeyValueItem[]
 
-export function obj2arr(obj: object | any[]) {
+export function obj2arr(obj: object | any[] = {}) {
   if (Array.isArray(obj)) {
     const arr = new KeyValueArr(true)
     for (let i = 0; i < obj.length; i++) {

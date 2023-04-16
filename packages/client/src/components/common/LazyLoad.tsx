@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 function getLazyComponent(Component) {
@@ -23,19 +23,20 @@ function getLazyComponent(Component) {
     )
   }
 }
-export function LazyComponet({callBack,triggerOnce}) {
-  const [loaded, setLoaded] = useState(false)
-  const { ref, inView } = useInView({
-    threshold: 0,
-    triggerOnce
-  })
+export function LazyComponet({ callBack }) {
+  const ref = useRef()
   useEffect(() => {
-    if (inView) {
-      console.log('加载更多')
-      // 当元素进入视口时，加载子元素
-      callBack()
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        console.log('加载')
+        callBack()
+      }
+    })
+    io.observe(ref.current)
+    return () => {
+      io.disconnect()
     }
-  }, [inView])
+  })
 
   return <div ref={ref} style={{ height: '0px' }}></div>
 }
