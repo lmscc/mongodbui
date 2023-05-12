@@ -5,14 +5,14 @@ export function useNav() {
   const navigate = useNavigate()
   return {
     goDb(dbName: string) {
-      dispatch('changeActive', {
+      dispatch('main')('changeActive', {
         activeDb: dbName,
         activeCol: null
       })
       navigate(`/main/database`)
     },
     goCol(dbName: string, colName: string) {
-      dispatch('changeActive', {
+      dispatch('main')('changeActive', {
         activeDb: dbName,
         activeCol: colName
       })
@@ -22,7 +22,7 @@ export function useNav() {
       navigate('/login')
     },
     goDatabases() {
-      dispatch('', {
+      dispatch('main')('', {
         activeDb: null,
         activeCol: null
       })

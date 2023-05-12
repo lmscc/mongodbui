@@ -21,7 +21,7 @@ function TreeItem({
   onDeleteCol: (dbName: string, colName: string) => void
 }) {
   const [fold, setFold] = useState(true)
-  const { activeDb, activeCol } = select('activeDb', 'activeCol')
+  const { activeDb, activeCol } = select('main')('activeDb', 'activeCol')
   useEffect(() => {
     if (dbName === activeDb && activeCol !== null) {
       setFold(false)

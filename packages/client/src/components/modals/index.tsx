@@ -1,6 +1,7 @@
 import CreateModal from './createModal'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import DropModal from './dropModal'
+import { dispatch, select } from '@/reducers'
 enum showModalType {
   createDB,
   deleteDB,
@@ -8,56 +9,48 @@ enum showModalType {
   deleteCol,
   none
 }
-const fnMap: Record<'createDB' | 'deleteDB' | 'createCol' | 'deleteCol', (...arr: any) => any> = {}
 export default function Modals() {
-  const [dbName, setdbName] = useState('')
-  const [colName, setColName] = useState('')
-  const [showModal, setshowModal] = useState(showModalType.none)
-  useEffect(() => {
-    fnMap.createDB = function (dbName: string, colName: string) {
-      setshowModal(showModalType.createDB)
-      setdbName(dbName)
-      setColName(colName)
-    }
-    fnMap.deleteDB = function (dbName: string) {
-      setshowModal(showModalType.deleteDB)
-      setdbName(dbName)
-    }
-    fnMap.createCol = function (dbName: string) {
-      setshowModal(showModalType.createCol)
-      setdbName(dbName)
-    }
-    fnMap.deleteCol = function (dbName: string, colName: string) {
-      setshowModal(showModalType.deleteCol)
-      setdbName(dbName)
-      setColName(colName)
-    }
-  }, [])
+  const { modalType, dbName, colName } = select('modals')('modalType', 'dbName', 'colName')
+
   function hide() {
-    setshowModal(showModalType.none)
+    dispatch('modals')('', {
+      modalType: 'none'
+    })
   }
   function getModal() {
-    if (showModal === showModalType.createDB) {
+    if (modalType === 'createDb') {
       return <CreateModal onCancel={hide} dbName={dbName} createType="Database" />
-    } else if (showModal === showModalType.deleteDB) {
+    } else if (modalType === 'deleteDb') {
       return <DropModal onCancel={hide} dbName={dbName} colName={colName} dropType="Database" />
-    } else if (showModal === showModalType.createCol) {
+    } else if (modalType === 'createCol') {
       return <CreateModal onCancel={hide} dbName={dbName} createType="Collection" />
-    } else if (showModal === showModalType.deleteCol) {
+    } else if (modalType === 'deleteCol') {
       return <DropModal onCancel={hide} dbName={dbName} colName={colName} dropType="Collection" />
     }
   }
   return <div>{getModal()}</div>
 }
 export function createDB() {
-  fnMap.createDB()
+  dispatch('modals')('', {
+    modalType: 'createDb'
+  })
 }
 export function deleteDB(dbName: string) {
-  fnMap.deleteDB(dbName)
+  dispatch('modals')('', {
+    modalType: 'deleteDb',
+    dbName
+  })
 }
 export function createCol(dbName: string) {
-  fnMap.createCol(dbName)
+  dispatch('modals')('', {
+    modalType: 'createCol',
+    dbName
+  })
 }
 export function deleteCol(dbName: string, colName: string) {
-  fnMap.deleteCol(dbName, colName)
+  dispatch('modals')('', {
+    modalType: 'deleteCol',
+    dbName,
+    colName
+  })
 }

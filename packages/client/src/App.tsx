@@ -9,7 +9,7 @@ import { AliveScope } from 'react-activation'
 import router from './router'
 import Modals from './components/modals'
 function App() {
-  const { showLoading } = select('showLoading')
+  const { showLoading } = select('main')('showLoading')
 
   const [messageApi, contextHolder] = message.useMessage()
   globalStore.messageApi = messageApi

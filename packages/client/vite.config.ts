@@ -11,8 +11,8 @@ export default defineConfig({
   server: {
     proxy: {
       '^/api/.*': {
-        target: 'http://localhost:3016',
-        // target: 'http://116.205.239.59:3016/mongodbui',
+        // target: 'http://localhost:3016',
+        target: 'https://lmscc.top/mongodbui',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

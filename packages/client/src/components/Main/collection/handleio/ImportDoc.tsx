@@ -5,13 +5,13 @@ import ObjDisplay from '@/components/common/objview/index'
 import { addDocument } from '@/request/index'
 import store from '@/global'
 export default function ImportDoc({ open, onCancel }: { open: boolean; onCancel: () => void }) {
-  const { activeDb, activeCol, dbAndCol, activeColPageId } = select(
+  const { activeDb, activeCol, dbAndCol, activeColPageId } = select('main')(
     'activeDb',
     'activeCol',
     'dbAndCol',
     'activeColPageId'
   )
-  const pageConfig = selectByFn<pageConfig>((state) => state.colPageList.find((item) => item.id === activeColPageId))
+  const pageConfig = selectByFn('main')((state) => state.colPageList.find((item) => item.id === activeColPageId))
 
   const [obj, setObj] = useState({
     key: 'value'
@@ -33,7 +33,7 @@ export default function ImportDoc({ open, onCancel }: { open: boolean; onCancel:
           })
           store.messageApi.success('插入成功')
 
-          dispatch('', {
+          dispatch('main')('', {
             dbAndCol: JSON.parse(JSON.stringify(dbAndCol))
           })
         })

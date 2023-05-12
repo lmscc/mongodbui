@@ -168,6 +168,7 @@ export default function ConditionSearch({ onChange, error, value }) {
           <div className={styles.tipContent}>
             {options.map(({ value, highlight }, index) => (
               <div
+                key={value}
                 className={classNames({
                   [styles.activeOption]: activeIndex === index,
                   [styles.option]: true

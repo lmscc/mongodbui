@@ -19,14 +19,14 @@ const mainRoutes: RouteObject = {
       if (!isLogin) {
         const res = await login('')
         if (res) {
-          dispatch('', {
+          dispatch('main')('', {
             isLogin: true
           })
         } else {
           location.hash = '#/login'
         }
       }
-      const result = await ensureDbAndCol()
+      const result = await ensureDbAndCol.getData()
       return true
     } catch (err) {
       console.log(err)
@@ -50,14 +50,14 @@ const mainRoutes: RouteObject = {
       //   const { dbName } = params
       //   await ensureDbAndCol()
       //   if (store.getState().main.dbAndCol[dbName]) {
-      //     dispatch('', {
+      //     dispatch('main')('', {
       //       activeDb: dbName,
       //       activeCol: null
       //     })
       //   } else {
       //     // 不存在该db的话跳到databases页面
       //     location.hash = '#/main'
-      //     dispatch('', {
+      //     dispatch('main')('', {
       //       activeDb: null
       //     })
       //   }
@@ -75,9 +75,9 @@ const mainRoutes: RouteObject = {
         if (!activeDb || !activeCol) {
           location.hash = `#/main`
         }
-        await ensureDbAndCol()
+        await ensureDbAndCol.getData()
         // if (store.getState().main.dbAndCol[dbName].collections.find((item) => item.name === colName)) {
-        //   dispatch('', {
+        //   dispatch('main')('', {
         //     activeDb: dbName,
         //     activeCol: colName
         //   })
@@ -86,7 +86,7 @@ const mainRoutes: RouteObject = {
         //   console.log(`没有${colName}路由`)
 
         //   location.hash = `#/main/${dbName}`
-        //   dispatch('', {
+        //   dispatch('main')('', {
         //     activeDb: dbName,
         //     activeCol: null
         //   })

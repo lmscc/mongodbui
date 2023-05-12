@@ -26,7 +26,7 @@ export default function Search({
   const [sortError, setSortError] = useState(null)
   const [search, setSearch] = useState('')
   const [searchError, setSearchError] = useState(null)
-  const { activeDb, activeCol } = select('activeDb', 'activeCol')
+  const { activeDb, activeCol } = select('main')('activeDb', 'activeCol')
   useEffect(() => {
     setSkip(undefined)
     setLimit(undefined)

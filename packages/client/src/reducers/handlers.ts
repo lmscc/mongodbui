@@ -1,6 +1,6 @@
-export function handleDrop(type, store, payload) {
+export function handleDrop(type, state, payload) {
   if (type === 'drop') {
-    const { colPageList } = store.getState().main
+    const { colPageList } = state
     const { dbAndCol } = payload
     const deleteMap = {}
     for (const page of colPageList) {
@@ -27,10 +27,10 @@ export function handleDrop(type, store, payload) {
     }
   }
 }
-export function handleChangeActive(type, store, payload) {
+export function handleChangeActive(type, state, payload) {
   if (type === 'changeActive') {
     // 当点击侧边栏使得db，col改变时，把状态同步到active的page上
-    const { colPageList, activeColPageId } = store.getState().main
+    const { colPageList, activeColPageId } = state
     const { activeDb, activeCol } = payload
     const activePage = colPageList.find((item) => activeColPageId === item.id)
     if (activePage) {

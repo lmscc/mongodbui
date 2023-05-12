@@ -9,15 +9,16 @@ import { createDB } from '@/components/modals/index'
 import { logout } from '@/request/index'
 import type { sidebarTreeItemType } from '@/global/types'
 import styles from './index.module.styl'
-
+import { ensureDbAndCol } from '@/request/ensure'
 export function HeadContent() {
   const { goLogin } = useNav()
-  const { uriConfig } = select('uriConfig')
+  const { uriConfig } = select('main')('uriConfig')
   function logOut() {
     // localStorage.removeItem('jwt')
     logout()
       .then((res) => {
-        dispatch('init', {
+        ensureDbAndCol.removePromise()
+        dispatch('main')('init', {
           isLogin: false
         })
         goLogin()
@@ -38,7 +39,7 @@ export function HeadContent() {
   )
 }
 export function BodyContent() {
-  const { dbAndCol, activeDb, activeCol } = select('dbAndCol', 'activeDb', 'activeCol')
+  const { dbAndCol, activeDb, activeCol } = select('main')('dbAndCol', 'activeDb', 'activeCol')
   const { goDb, goCol, goDatabases } = useNav()
 
   function goToDataBases() {

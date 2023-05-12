@@ -29,7 +29,7 @@ enum sortModeType {
 }
 
 export default function DbDetail() {
-  const { activeDb, dbAndCol } = select('activeDb', 'dbAndCol')
+  const { activeDb, dbAndCol } = select('main')('activeDb', 'dbAndCol')
 
   const [isReverse, setisReverse] = useState(false)
   const [ItemMode, setItemMode] = useState(itemModeType.list)

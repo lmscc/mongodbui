@@ -7,7 +7,6 @@ import style from './DataBases.module.styl'
 import { createDB, deleteDB } from '@/components/modals/index'
 import { select } from '@/reducers'
 import type { database } from '@/global/types'
-import { useNavigate } from 'react-router-dom'
 import { useNav } from '@/router/navigate'
 
 enum sortModeType {
@@ -24,7 +23,7 @@ function transForm(obj: database) {
 }
 
 export default function DataBases() {
-  const { dbAndCol } = select('dbAndCol')
+  const { dbAndCol } = select('main')('dbAndCol')
   const [itemMode, setitemMode] = useState(itemModeType.list)
   // const itemMap = ['list','card','hold']
   const [isReverse, setisReverse] = useState(false)
@@ -50,7 +49,6 @@ export default function DataBases() {
   }
 
   const { goDb } = useNav()
-  const navigate = useNavigate()
 
   return (
     <div className={style.databases}>

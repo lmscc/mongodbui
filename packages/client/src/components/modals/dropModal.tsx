@@ -15,7 +15,7 @@ export default function DropModal({
   dropType: 'Database' | 'Collection'
   onCancel: () => void
 }) {
-  const { dbAndCol, activeCol, activeDb } = select('dbAndCol', 'activeCol', 'activeDb')
+  const { dbAndCol, activeCol, activeDb } = select('main')('dbAndCol', 'activeCol', 'activeDb')
 
   const [disable, setDisable] = useState(true)
   function handleInput(e: ChangeEvent<HTMLInputElement>) {
@@ -44,7 +44,7 @@ export default function DropModal({
 
           dbAndColNew[dbName].collections = dbAndColNew[dbName].collections.filter((item) => item.name !== colName)
 
-          dispatch('drop', {
+          dispatch('main')('drop', {
             dbAndCol: dbAndColNew
           })
           // if (dbName === activeDb && colName === activeCol) {
@@ -55,7 +55,7 @@ export default function DropModal({
       dropDatabase(dbName)
         .then((res) => {
           delete dbAndCol[dbName]
-          dispatch('drop', {
+          dispatch('main')('drop', {
             dbAndCol: JSON.parse(JSON.stringify(dbAndCol))
           })
         })

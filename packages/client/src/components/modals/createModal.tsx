@@ -13,7 +13,7 @@ export default function createModal({
   createType: 'Database' | 'Collection'
   onCancel: () => void
 }) {
-  const { dbAndCol } = select('dbAndCol') as { dbAndCol: dbMap }
+  const { dbAndCol } = select('main')('dbAndCol') as { dbAndCol: dbMap }
 
   const [showAlert, setshowAlert] = useState(false)
   const [newDbName, setNewDbName] = useState('')
@@ -44,7 +44,7 @@ export default function createModal({
           avgObjSize: '0B',
           storageSize: '4.10KB'
         })
-        dispatch('', {
+        dispatch('main')('', {
           dbAndCol: dbAndColNew
         })
       })
@@ -60,7 +60,7 @@ export default function createModal({
       } else {
         createDatabase(newDbName, colName).then(() => {
           getDbAndCollections().then((res) => {
-            dispatch('', {
+            dispatch('main')('', {
               dbAndCol: res[0]
             })
           })

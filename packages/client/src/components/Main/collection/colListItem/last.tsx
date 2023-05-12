@@ -266,7 +266,7 @@ let count = 1
 // 复制,拷贝obj
 // 删除,删除对应id
 export default function ColListItem({ obj, onDelete }: { obj: doc; onDelete: (id: string) => void }) {
-  const { activeDb, activeCol } = select('activeDb', 'activeCol')
+  const { activeDb, activeCol } = select('main')('activeDb', 'activeCol')
 
   const objRef = useRef(obj)
   const { current: refObj } = objRef

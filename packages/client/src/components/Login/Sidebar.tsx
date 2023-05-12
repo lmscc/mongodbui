@@ -17,7 +17,7 @@ export default function Sidebar() {
           key={timestamp}
           className={styles.item}
           onClick={() =>
-            dispatch('', {
+            dispatch('main')('', {
               uriConfig: {
                 hostName,
                 port,

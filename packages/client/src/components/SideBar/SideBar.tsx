@@ -12,7 +12,7 @@ import { useNav } from '@/router/navigate'
 
 export default function SideBar() {
   // let dbAndCol = useContext(dbAndColContext);
-  const { dbAndCol, activeDb, activeCol } = select('dbAndCol', 'activeDb', 'activeCol')
+  const { dbAndCol, activeDb, activeCol } = select('main')('dbAndCol', 'activeDb', 'activeCol')
   const { goDb, goCol, goLogin, goDatabases } = useNav()
 
   function goToDataBases() {
@@ -39,7 +39,7 @@ export default function SideBar() {
       settreeData(tree)
     }
   }, [dbAndCol])
-  function handleSelect(arr: [string, string | null]) {
+  function handleselect('main')(arr: [string, string | null]) {
     if (arr[1]) {
       // 更新表名
       goCol(arr[0], arr[1])

@@ -19,22 +19,22 @@ export default function Login() {
   const [recentList, setRecentList] = useLocalStorageState('recent', {
     defaultValue: []
   })
-  const { uriConfig } = select('uriConfig')
+  const { uriConfig } = select('main')('uriConfig')
   const { hostName, port, userName, psd } = uriConfig
   const { goDatabases } = useNav()
   async function handleLogin() {
     try {
-      dispatch('', {
+      dispatch('main')('', {
         showLoading: true
       })
-      let uri
+      let uri: string
       if (!userName || !psd) {
         uri = `mongodb://${hostName}:${port}`
       } else {
         uri = `mongodb://${userName}:${psd}@${hostName}:${port}`
       }
       await login(uri)
-      await ensureDbAndCol()
+      await ensureDbAndCol.getData()
       const date = new Date()
 
       setRecentList([
@@ -54,10 +54,10 @@ export default function Login() {
       goDatabases()
     } finally {
       setTimeout(() => {
-        dispatch('', {
+        dispatch('main')('', {
           showLoading: false
         })
-      }, 500)
+      })
     }
   }
   return (
@@ -74,7 +74,7 @@ export default function Login() {
             value={hostName}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
               uriConfig.hostName = e.target.value
-              dispatch('', {
+              dispatch('main')('', {
                 uriConfig: { ...uriConfig }
               })
             }}
@@ -85,7 +85,7 @@ export default function Login() {
             value={port}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
               uriConfig.port = e.target.value
-              dispatch('', {
+              dispatch('main')('', {
                 uriConfig: { ...uriConfig }
               })
             }}
@@ -96,7 +96,7 @@ export default function Login() {
             value={userName}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
               uriConfig.userName = e.target.value
-              dispatch('', {
+              dispatch('main')('', {
                 uriConfig: { ...uriConfig }
               })
             }}
@@ -107,7 +107,7 @@ export default function Login() {
             value={psd}
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
               uriConfig.psd = e.target.value
-              dispatch('', {
+              dispatch('main')('', {
                 uriConfig: { ...uriConfig }
               })
             }}

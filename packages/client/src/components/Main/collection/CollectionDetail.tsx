@@ -6,11 +6,13 @@ import CollectionEmpty from './CollectionEmpty'
 import { type dbMap } from '@/global/types'
 import { Loading } from '@/components/common/Loading'
 import ImportPopover from './handleio/ImportPopover'
-import { select, dispatch, selectByFn, type pageConfig } from '@/reducers/index'
+import { select, dispatch, selectByFn } from '@/reducers/index'
 import './CollectionDetail.styl'
 import Search from './search/Search'
 import { useNav } from '@/router/navigate'
 import { LazyComponet } from '@/components/common/LazyLoad'
+import { type pageConfig } from '@/reducers/mainReducer'
+
 const ONE_PAGE = 10
 const defaultConfig = {
   skip: 0,
@@ -30,8 +32,8 @@ function CollectionDetail({
   id: number
   // activeColPageId: number
 }) {
-  const { dbAndCol } = select('dbAndCol')
-  const curPage: pageConfig = selectByFn((state) => {
+  const { dbAndCol } = select('main')('dbAndCol')
+  const curPage: pageConfig = selectByFn('main')((state) => {
     return state.colPageList.find((item) => item.id === id)
   })
   const [refreshDoc, setRefreshDoc] = useState(1)
@@ -39,7 +41,7 @@ function CollectionDetail({
   let docList = curPage && curPage.docList
 
   const col: collection =
-    selectByFn((state) => {
+    selectByFn('main')((state) => {
       return (
         state.dbAndCol != null &&
         DbName != null &&
@@ -86,7 +88,7 @@ function CollectionDetail({
       ).then(({ arr, count }) => {
         setMax(Math.min(searchConfig.limit, count - searchConfig.skip))
         curPage && (curPage.docList = arr)
-        dispatch('', {})
+        dispatch('main')('', {})
       })
     )
     setPage(page)
@@ -103,7 +105,7 @@ function CollectionDetail({
         })
         setMax(Math.min(limit, count - skip))
         curPage && (curPage.docList = arr)
-        dispatch('', {})
+        dispatch('main')('', {})
       })
     )
   }
@@ -116,7 +118,7 @@ function CollectionDetail({
     } else {
       setMax(0)
       curPage && (curPage.docList = [])
-      dispatch('', {})
+      dispatch('main')('', {})
     }
   }, [DbName, colName])
 
@@ -140,7 +142,7 @@ function CollectionDetail({
       curPage.docList = curPage.docList.filter((item) => item._id !== id)
       setMax((pre) => pre - 1)
 
-      dispatch('', {
+      dispatch('main')('', {
         dbAndCol: newDbAndCol
       })
     },

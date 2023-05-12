@@ -21,7 +21,7 @@ function TreeItem({
   onDeleteCol: (dbName: string, colName: string) => void
 }) {
   const [fold, setFold] = useState(true)
-  const { activeDb, activeCol } = select('activeDb', 'activeCol')
+  const { activeDb, activeCol } = select('main')('activeDb', 'activeCol')
   useEffect(() => {
     if (dbName === activeDb && activeCol !== null) {
       setFold(false)
@@ -105,6 +105,7 @@ export default function Tree({
   onSelect: (arr: [string, string | null]) => void
   treeData: sidebarTreeItemType[]
 }) {
+  // setScrollTop =    useVitualScroll(height,itemHeight,scrollTop)
   function handleSelect(arr: [string, string | null]) {
     onSelect(arr)
   }

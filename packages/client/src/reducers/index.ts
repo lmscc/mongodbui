@@ -1,109 +1,68 @@
 import { combineReducers, createStore } from 'redux'
 import { useSelector } from 'react-redux'
-import type { dbMap } from '@/global/types'
-import { handleChangeActive, handleDrop } from './handlers'
-export interface pageConfig {
-  id: number
-  dbName: string
-  colName: string
-  activeSub: string
-  docList: any[]
-}
-interface uriConfig {
-  hostName: string
-  port: string
-  userName: string
-  psd: string
-}
-interface stateType {
-  uriConfig: null | uriConfig
-  isLogin: boolean
-  dbAndCol: null | dbMap
-  activeDb: null | string
-  activeCol: null | string
-  docList: null | any[]
-  colPageList: pageConfig[]
-  activeColPageId: number
-  showLoading: boolean
-}
-const arr = JSON.parse(localStorage.getItem('recent')) || []
+import mainReducer, { type mainKeyType } from './mainReducer'
+import modalsReducer, { type modalKeyType } from './modalsReducer'
 
-const defState: stateType = {
-  uriConfig:
-    arr.length === 0
-      ? {
-          hostName: location.hostname,
-          port: 27017,
-          userName: 'admin',
-          psd: 'password123'
-        }
-      : arr[0],
-  isLogin: false,
-
-  dbAndCol: null,
-  activeDb: null,
-  activeCol: null,
-  docList: null,
-  colPageList: [],
-  activeColPageId: 0,
-  showLoading: false
+const obj = {
+  main: mainReducer,
+  modals: modalsReducer
 }
-let count = 0
-const reducer = function (state = defState, { type, payload }: { type: string; payload: Partial<stateType> }) {
-  handleDrop(type, store, payload)
-  handleChangeActive(type, store, payload)
-  if (type === 'init') {
-    return defState
-  }
-  if (payload) {
-    const newState = { ...state }
-    Object.assign(newState, payload)
-    console.log(count++, newState)
-    return newState
-  } else {
-    return state
+const allReducers = combineReducers(obj)
+
+const store = createStore(allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+type inferReturn<fn> = fn extends (...args) => infer R ? R : never
+export type allState = {
+  [key in keyof typeof obj]: inferReturn<(typeof obj)[key]>
+}
+
+interface allTypes {
+  main: mainKeyType
+  others: modalKeyType
+}
+
+export const select = <rKey extends keyof allState>(reducerKey: rKey) => {
+  return <T extends Array<keyof allState[rKey]>>(
+    ...keys: T
+  ): {
+    [key in T[number]]: allState[rKey][key]
+  } => {
+    const obj: Record<T[number], any> = {}
+    for (const key of keys) {
+      const v = useSelector((state) => state[reducerKey][key]) as any
+      obj[key] = v
+    }
+    return obj
   }
 }
-const allReducers = combineReducers({
-  main: reducer
-})
 
-const store = createStore(allReducers)
-
-export interface fullState {
-  main: typeof defState
+export const selectByFn = <rKey extends keyof allState>(reducerKey: rKey) => {
+  return (fn: (state: allState[rKey]) => any) => {
+    return useSelector((state) => {
+      return fn(state[reducerKey])
+    })
+  }
 }
 
-// interface selectType {
-// <T extends Array<keyof stateType>>(...keys: T): {
-//   [key in T[number]]: stateType[key]
+export const dispatch = <rKey extends keyof allState>(reducerType: rKey) => {
+  return (type: allTypes[rKey], payload: Partial<allState[rKey]>) => {
+    const typeObj = { reducerType, type }
+
+    if (payload) {
+      store.dispatch({
+        type: `${reducerType}/${type}`,
+        typeObj,
+        payload
+      })
+    }
+  }
+}
+
+// // type dispatch = (type: any, payload: Partial<stateType>) => void
+// export const dispatch = (type: '' | 'changeList' | 'changeActive' | 'init' | 'drop', payload: Partial<stateType>) => {
+//   store.dispatch('main')({
+//     type,
+//     payload
+//   })
 // }
-//   <T>(fn: (state: fullState) => T): T
-// }
-
-export const select = <T extends Array<keyof stateType>>(
-  ...keys: T
-): {
-  [key in T[number]]: stateType[key]
-} => {
-  const obj: Record<T[number], any> = {}
-  for (const key of keys) {
-    const v = useSelector<fullState>((state) => state.main[key]) as any
-    obj[key] = v
-  }
-  return obj
-}
-export const selectByFn = <T>(fn: (state: stateType) => any) => {
-  return useSelector<fullState, T>((state) => {
-    return fn(state.main)
-  })
-}
-// type dispatch = (type: any, payload: Partial<stateType>) => void
-export const dispatch = (type: '' | 'changeList' | 'changeActive' | 'init' | 'drop', payload: Partial<stateType>) => {
-  store.dispatch({
-    type,
-    payload
-  })
-}
 window.store = store
 export default store

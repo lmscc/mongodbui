@@ -4,7 +4,7 @@ import styles from './CollectionPage.module.styl'
 import classNames from 'classnames'
 import Icon from '@/components/common/Icon'
 export default function CollectionPage() {
-  const { colPageList, activeColPageId, activeDb, activeCol } = select(
+  const { colPageList, activeColPageId, activeDb, activeCol } = select('main')(
     'colPageList',
     'activeColPageId',
     'activeDb',
@@ -13,7 +13,7 @@ export default function CollectionPage() {
   const activePage = colPageList.find((item) => item.id === activeColPageId)
   if (!colPageList.length) {
     const id = Math.random()
-    dispatch('changeList', {
+    dispatch('main')('changeList', {
       colPageList: [
         {
           id,
@@ -31,7 +31,7 @@ export default function CollectionPage() {
   function switchPage(id) {
     console.log('switchPage', id)
     const page = colPageList.find((item) => item.id === id)
-    dispatch('', {
+    dispatch('main')('', {
       activeColPageId: id,
       activeDb: page?.dbName,
       activeCol: page?.colName
@@ -39,7 +39,7 @@ export default function CollectionPage() {
   }
   function addPage() {
     const id = Math.random()
-    dispatch('changeList', {
+    dispatch('main')('changeList', {
       colPageList: [
         ...colPageList,
         {
@@ -65,7 +65,7 @@ export default function CollectionPage() {
         } else {
           newId = index - 1
         }
-        dispatch('changeList', {
+        dispatch('main')('changeList', {
           colPageList: colPageList.filter((item) => item.id !== id),
           activeColPageId: colPageList[newId].id,
           activeDb: colPageList[newId].dbName,
@@ -73,7 +73,7 @@ export default function CollectionPage() {
         })
       }
     } else {
-      dispatch('changeList', {
+      dispatch('main')('changeList', {
         colPageList: colPageList.filter((item) => item.id !== id)
       })
     }
