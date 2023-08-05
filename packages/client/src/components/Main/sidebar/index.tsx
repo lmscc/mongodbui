@@ -1,14 +1,15 @@
 import { Input } from 'antd'
+import classNames from 'classnames'
+import { useState } from 'react'
 import logoUrl from '@/assets/logo.png'
+import Tree from './Tree'
+import styles from './index.module.styl'
 import { dispatch, select } from '@/reducers'
 import { useNav } from '@/router/navigate'
-import classNames from 'classnames'
-import { useEffect, useState } from 'react'
-import Tree from './Tree'
 import { createDB } from '@/components/modals/index'
 import { logout } from '@/request/index'
+import { useSyncEffect } from '@/hooks'
 import type { sidebarTreeItemType } from '@/global/types'
-import styles from './index.module.styl'
 import { ensureDbAndCol } from '@/request/ensure'
 export function HeadContent() {
   const { goLogin } = useNav()
@@ -46,7 +47,8 @@ export function BodyContent() {
     goDatabases()
   }
   const [treeData, settreeData] = useState<sidebarTreeItemType[]>([])
-  useEffect(() => {
+  const [expandedItems, setExpandedItems] = useState([])
+  useSyncEffect(() => {
     if (dbAndCol != null) {
       // console.log("handle dbAndCol", treeData);
 
@@ -66,6 +68,20 @@ export function BodyContent() {
       settreeData(tree)
     }
   }, [dbAndCol])
+  useSyncEffect(() => {
+    if (!activeCol) return
+    let activeItem
+    for (const item of treeData) {
+      if (item.dbName === activeDb) {
+        activeItem = item
+        break
+      }
+    }
+    if (!expandedItems.includes(activeItem)) {
+      setExpandedItems([...expandedItems, activeItem])
+    }
+  }, [activeDb, activeCol])
+
   function handleSelect(arr: [string, string | null]) {
     if (arr[1]) {
       // 更新表名
@@ -74,8 +90,14 @@ export function BodyContent() {
       goDb(arr[0])
     }
   }
+  /*
+  点击，调用onSelect，设置active
+  []
+  */
+  const selectPath = [activeDb, activeCol] as const
+  // tree treeData,active,onSelect
   return (
-    <div style={{ padding: '10px' }}>
+    <div style={{ padding: '10px', flex: '1', width: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className={classNames(styles.dbs, activeDb == null && activeCol == null ? styles.selected : '')}>
         <i className={classNames('iconfont', 'icon-shujuku', styles.normalIcon)}></i>
         <div className={styles.name} onClick={goToDataBases}>
@@ -84,7 +106,7 @@ export function BodyContent() {
         <i className={classNames('icon-jia', 'iconfont')} onClick={createDB}></i>
       </div>
       <Input placeholder="Search" />
-      <Tree treeData={treeData} onSelect={handleSelect} />
+      <Tree treeData={treeData} expandedItems={expandedItems} onExpand={setExpandedItems} selectPath={selectPath} onSelect={handleSelect} />
     </div>
   )
 }

@@ -8,7 +8,7 @@ import postcss from 'rollup-plugin-postcss';
 import dts from 'rollup-plugin-dts'
 const buildOptions = [
   {
-    input: ["./src/components/common/objview/index.tsx","D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/client/src/components/common/Input.tsx"],
+    input: ["./src/components/common/objview/index.tsx"],
     // 将 output 改造成一个数组
     output: [
       {
@@ -26,11 +26,12 @@ const buildOptions = [
       postcss({ include: '**/*.css' })
     ]
   }
-  , {
-    input: ["./src/components/common/objview/index.tsx", "D:/桌面/web-project2/最22-mongodbUI-monrepo/packages/client/src/components/common/Input.tsx"],
-    output: [{ filename: 'index.d.ts', dir: 'dist/es/type', format: 'esm' }],
-    plugins: [dts(), stylus(),
-    postcss({ include: '**/*.css' })]
-  }]
+  // , {
+  //   input: ["./src/components/common/objview/index.tsx"],
+  //   output: [{ filename: 'index.d.ts', dir: 'dist/es/type', format: 'esm' }],
+  //   plugins: [dts(), stylus(),
+  //   postcss({ include: '**/*.css' })]
+  // }
+]
 
 export default buildOptions;

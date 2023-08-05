@@ -1,6 +1,5 @@
 import './ListItem.styl'
 import Icon from '@/components/common/Icon'
-import { select } from '@/reducers'
 export default function ListItem({
   mode,
   name,
@@ -18,7 +17,6 @@ export default function ListItem({
   | {
       mode: 'hold'
     }) {
-
   if (mode === 'hold') {
     return (
       <div className="item_hold">

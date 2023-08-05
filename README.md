@@ -16,3 +16,5 @@
 **运行**
 服务器 server下 npm run dev
 客户端 client下 npm run dev
+ 
+[点击查看示例文件](docs/demo.jpg)

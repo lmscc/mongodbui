@@ -1,6 +1,6 @@
-import { dispatch } from '@/reducers'
 import { useLocalStorageState } from 'ahooks'
 import styles from './Sidebar.module.styl'
+import { dispatch } from '@/reducers'
 import Icon from '@/components/common/Icon'
 export default function Sidebar() {
   const [recentList, setRecentList] = useLocalStorageState('recent', {

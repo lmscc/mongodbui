@@ -1,15 +1,10 @@
-import { dispatch, select } from '@/reducers/index'
+import classNames from 'classnames'
 import CollectionDetail from './CollectionDetail'
 import styles from './CollectionPage.module.styl'
-import classNames from 'classnames'
+import { dispatch, select } from '@/reducers/index'
 import Icon from '@/components/common/Icon'
 export default function CollectionPage() {
-  const { colPageList, activeColPageId, activeDb, activeCol } = select('main')(
-    'colPageList',
-    'activeColPageId',
-    'activeDb',
-    'activeCol'
-  )
+  const { colPageList, activeColPageId, activeDb, activeCol } = select('main')('colPageList', 'activeColPageId', 'activeDb', 'activeCol')
   const activePage = colPageList.find((item) => item.id === activeColPageId)
   if (!colPageList.length) {
     const id = Math.random()

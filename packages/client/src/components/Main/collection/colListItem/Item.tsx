@@ -1,24 +1,16 @@
-import ObjDisplay from '@/components/common/objview/index'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { Button } from 'antd'
 import clipboard from 'clipboard'
+import { useMount } from 'ahooks'
 import './ColListItem.styl'
-import { deleteDocument, findDocumentById, updateDocument } from '@/request/index'
+import ObjDisplay from '@/components/common/objview/index'
 import store from '@/global'
-import getLazyComponent from '@/components/common/LazyLoad'
-function ColListItem({
-  obj,
-  dbName,
-  colName,
-  onDelete
-}: {
-  obj: doc
-  dbName: string
-  colName: string
-  onDelete: (id: string) => void
-}) {
-  // console.log('render')
-
+import { deleteDocument, findDocumentById, updateDocument } from '@/request/index'
+function ColListItem({ obj, dbName, colName, onDelete }: { obj: doc; dbName: string; colName: string; onDelete: (id: string) => void }) {
+  console.log('item render')
+  useMount(() => {
+    console.log('item mounted')
+  })
   const [comObj, setcomObj] = useState(obj)
   // 2.拷贝
   function copy() {
@@ -93,4 +85,4 @@ function ColListItem({
   )
 }
 
-export default ColListItem
+export default memo(ColListItem)

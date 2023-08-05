@@ -18,10 +18,11 @@
       "name": "Launch via NPM",
       "request": "launch",
       "runtimeArgs": [
-        "a.js"
+        "run",
+        "dev"
       ],
       "cwd": "${workspaceFolder}/packages/client",
-      "runtimeExecutable": "node",
+      "runtimeExecutable": "npm",
       "skipFiles": [
         "<node_internals>/**"
       ],

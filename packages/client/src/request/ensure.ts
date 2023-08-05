@@ -1,5 +1,5 @@
-import { dispatch } from '@/reducers'
 import { getDbAndCollections } from '.'
+import { dispatch } from '@/reducers'
 /*
 一个请求库要做到什么？
 - 错误重试，也可以显式地提示错误，让用户手动发请求

@@ -1,20 +1,13 @@
-//@ts-nocheck
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Popover, Dropdown } from 'antd'
 import { dataType } from './enum'
 import './index.styl'
+import { type KeyValueArr, type KeyValueItem, arr2obj, obj2arr, initArr, setInit, addNewItems, deleteItems } from './keyValue'
 import Input from '@/components/common/Input'
-import {
-  type KeyValueArr,
-  type KeyValueItem,
-  arr2obj,
-  obj2arr,
-  initArr,
-  setInit,
-  addNewItems,
-  deleteItems
-} from './keyValue'
 import { isObject } from '@/global/utils'
+import VirtuoScroll from '@/components/common/VirtuoScroll'
+import { useUpdate } from 'ahooks'
+import { useSyncEffect } from '@/hooks'
 function getTypeColor(isObjectId: boolean, isObject: boolean | undefined, type: dataType) {
   if (isObject || type === dataType.null) return '#747474'
   else if (isObjectId) return '#f32c00'
@@ -37,13 +30,7 @@ function displayValue(item: KeyValueArr | string | number, isArr: boolean, isObj
   }
 }
 
-function getPopoverContent(
-  isObject: boolean,
-  isArr: boolean,
-  isArrayItem: boolean,
-  key: string,
-  addFn: (type: 'add' | 'after') => void
-) {
+function getPopoverContent(isObject: boolean, isArr: boolean, isArrayItem: boolean, key: string, addFn: (type: 'add' | 'after') => void) {
   const jsxArr = []
   if (!isArrayItem) {
     jsxArr.push(
@@ -184,7 +171,7 @@ function Item({
             ></i>
           )}
         </div>
-        <div className="count" style={{ width: 20 * depth + 20 + 'px' }} onClick={(e) => {}}>
+        <div className="count" style={{ width: 20 * depth + 24 + 'px' }} onClick={(e) => {}}>
           <div className={'num ' + (isEditable && !isObjectId ? 'none' : '')}>{count}</div>
           <Popover
             content={getPopoverContent(isObject, isArr, isArrayItem, key, (addType) => {
@@ -302,21 +289,24 @@ export default function ObjDisplay({
   onCancel: () => void
   // onModified: (isOrigin: boolean, newObj: object) => void
 }) {
-  const jsxArr: JSX.Element[] = []
-  const [time, settime] = useState(Math.random())
+  console.log('obj render')
+
+  const forceUpdate = useUpdate()
   const [isModified, setisModified] = useState(false)
   // 根据传入的obj，生成一个组件内部维护的状态 KeyValueArr
   const [KeyValueArr, setKeyValueArr] = useState(obj2arr(obj))
-  useEffect(() => {
+  useSyncEffect(() => {
     setKeyValueArr(obj2arr(obj))
   }, [obj])
   function refresh() {
-    settime(Math.random())
+    forceUpdate()
     // 处理展开
     const res = isArrModified(KeyValueArr)
     setisModified(res)
   }
   let count = 1
+  // 构造jsx数组
+  const jsxArr: JSX.Element[] = []
   function handleObj(arr: KeyValueArr, depth: number) {
     for (let i = 0; i < arr.length; i++) {
       const { value, isExpanded, id } = arr[i]
@@ -365,7 +355,16 @@ export default function ObjDisplay({
   }
   return (
     <>
-      <div className="wrap">{jsxArr}</div>
+      <div className="wrap">
+        <VirtuoScroll
+          items={jsxArr}
+          getItemHeight={() => 22}
+          renderItem={(item, index) => jsxArr[index]}
+          containerHeight={'fit'}
+          maxContainerHeight={400}
+        ></VirtuoScroll>
+        {/* {jsxArr} */}
+      </div>
       {isEditable && (
         <div className={'block ' + (!isModified ? 'normal' : 'modified')}>
           {isModified && 'Document modified'}

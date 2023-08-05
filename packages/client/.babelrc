@@ -1,0 +1,38 @@
+{
+  "presets": [
+      //  useBuiltIns 就是使用 polyfill （corejs）的方式，是在入口处全部引入（entry），还是每个文件引入用到的（usage），或者不引入（false）。
+    [
+        "@babel/preset-env",
+      {
+        "debug": true,
+        "targets": {
+          "browsers": "Chrome 20",
+        },
+        "corejs": 3,
+        "useBuiltIns": "entry" //"usage" or "entry" or "false"
+        // "useBuiltIns": "usage" //"entry" or "entry" or "false"
+      }
+    ],
+    "@babel/preset-react",
+  ],
+  "plugins": [
+    [
+      "@babel/transform-runtime",
+      {
+        "corejs": 3
+      }
+    ],
+    
+    // "./plugin-terser.js",
+    // "./plugin-any.js"
+    // [
+      //   "./auto-i18n-plugin.js",
+      //   {
+        //     "outputDir": "./i18n_result"
+        //   }
+        // ]
+    // "@babel/transform-object-set-prototype-of-to-assign"
+    // "@babel/transform-for-of",
+    // "@babel/transform-spread"
+  ]
+}

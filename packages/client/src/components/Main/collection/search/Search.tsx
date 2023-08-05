@@ -1,10 +1,12 @@
-import { select } from '@/reducers'
-import store from '@/global'
 import { Input, Button, InputNumber, Popover, Divider } from 'antd'
 import classNames from 'classnames'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { type InputStatus } from 'antd/es/_util/statusUtils'
 import styles from './Search.module.styl'
 import ConditionSearch from './ConditionSearch'
+import { useSyncEffect } from '@/hooks'
+import store from '@/global'
+import { select } from '@/reducers'
 // 因为detail组件太重，我把search组件提出来
 // 把数据抛上去，缺点是，父组件不能修改子组件的数据
 const tips = [
@@ -13,21 +15,15 @@ const tips = [
   ['查找至少有一个元素匹配的数组', '{ scores: { $elemMatch: { $gt: 80, $lt: 90 } } }']
 ]
 const regExp = /[$\w]+(?= *:)/g
-export default function Search({
-  onSearch,
-  dbCol
-}: {
-  onSearch: (condition, sort, skip, limit) => void
-  dbCol: string
-}) {
+export default function Search({ onSearch, dbCol }: { onSearch: (condition, sort, skip, limit) => void; dbCol: string }) {
   const [skip, setSkip] = useState(undefined)
   const [limit, setLimit] = useState(undefined)
   const [sort, setSort] = useState('')
   const [sortError, setSortError] = useState(null)
   const [search, setSearch] = useState('')
-  const [searchError, setSearchError] = useState(null)
+  const [searchError, setSearchError] = useState<InputStatus>('')
   const { activeDb, activeCol } = select('main')('activeDb', 'activeCol')
-  useEffect(() => {
+  useSyncEffect(() => {
     setSkip(undefined)
     setLimit(undefined)
     setSearch('')
@@ -36,7 +32,7 @@ export default function Search({
   function handleFind() {
     let sortObj, searchObj
     try {
-      const sort1 = sort.replaceAll(regExp, (str) => `"${str}"`)
+      const sort1 = sort.replaceAll(regExp, (str) => `"${String(str)}"`)
       console.log(sort1)
       sortObj = JSON.parse(sort1 || '{}')
       setSortError(false)
@@ -49,10 +45,10 @@ export default function Search({
       return
     }
     try {
-      const search1 = search.replaceAll(regExp, (str) => `"${str}"`)
+      const search1 = search.replaceAll(regExp, (str) => `"${String(str)}"`)
       console.log(search1)
       searchObj = JSON.parse(search1 || '{}')
-      setSearchError(false)
+      setSearchError('')
     } catch (err) {
       store.messageApi.open({
         type: 'error',

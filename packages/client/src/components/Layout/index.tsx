@@ -1,6 +1,6 @@
-import styles from './index.module.styl'
 import { Outlet } from 'react-router-dom'
 import classNames from 'classnames'
+import styles from './index.module.styl'
 import './handle.styl'
 function SideBar({ head, body }: { head: JSX.Element; body: JSX.Element }) {
   return (
@@ -10,7 +10,7 @@ function SideBar({ head, body }: { head: JSX.Element; body: JSX.Element }) {
     </div>
   )
 }
-export default function Main({ sideBarHead, sideBarBody }: { sideBarHead: JSX.Element; sideBarBody: JSX.Element }) {
+export default function Layout({ sideBarHead, sideBarBody }: { sideBarHead: JSX.Element; sideBarBody: JSX.Element }) {
   return (
     <div className={styles.app}>
       <div className={styles.mainWrap}>

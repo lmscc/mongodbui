@@ -1,6 +1,7 @@
 import { Input } from 'antd'
 import classNames from 'classnames'
 import { useRef, useState } from 'react'
+import { type InputStatus } from 'antd/es/_util/statusUtils'
 import styles from './ConditionSearch.module.styl'
 function isSatisfied(origin: string, search: string) {
   let si = 0
@@ -72,9 +73,9 @@ const operators = [
 ].map((str) => ({
   value: '$' + str
 }))
-export default function ConditionSearch({ onChange, error, value }) {
+export default function ConditionSearch({ onChange, error, value }: { onChange: (s: string) => void; error: InputStatus; value: string }) {
   const [open, setOpen] = useState(false)
-  const [options, setOptions] = useState<Array<{ value: string }>>([])
+  const [options, setOptions] = useState<Array<{ value: string; highlight?: true }>>([])
   const [activeIndex, setActiveIndex] = useState(0)
   const lastIndex = useRef(0)
   const lenRef = useRef(0)

@@ -1,14 +1,14 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ListItem from './components/ListItem'
 import ControlHeader from './components/ControlHeader'
 
+import styles from './DbDetail.module.styl'
 import { itemModeType } from '@/global/enums'
 import { deleteCol, createCol } from '@/components/modals/index'
 
 import type { collection } from '@/global/types'
 import { select } from '@/reducers'
-import { useNavigate } from 'react-router-dom'
-import styles from './DbDetail.module.styl'
 import { useNav } from '@/router/navigate'
 function transForm(obj: collection) {
   const arr: Array<[string, string | number]> = [

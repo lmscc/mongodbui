@@ -1,5 +1,5 @@
-import { isObject } from '@/global/utils'
 import { dataType } from './enum'
+import { isObject } from '@/global/utils'
 export class KeyValueItem<keyType = string | number, valueType = string | number | KeyValueArr> {
   id = Math.random()
 
@@ -74,13 +74,7 @@ export function obj2arr(obj: object | any[]) {
     for (let i = 0; i < obj.length; i++) {
       const isArr = Array.isArray(obj[i])
       const transformedValue = isObject(obj[i]) ? obj2arr(obj[i]) : obj[i]
-      const item = new KeyValueItem(
-        i,
-        transformedValue,
-        isArr ? 'array' : obj[i] === null ? 'null' : typeof obj[i],
-        true,
-        arr
-      )
+      const item = new KeyValueItem(i, transformedValue, isArr ? 'array' : obj[i] === null ? 'null' : typeof obj[i], true, arr)
       arr[i] = item
     }
     return arr
@@ -89,13 +83,7 @@ export function obj2arr(obj: object | any[]) {
     for (const [key, value] of Object.entries(obj)) {
       const isArr = Array.isArray(value)
       const transformedValue = isObject(value) ? obj2arr(value) : value
-      const item = new KeyValueItem(
-        key,
-        transformedValue,
-        isArr ? 'array' : value === null ? 'null' : typeof value,
-        false,
-        arr
-      )
+      const item = new KeyValueItem(key, transformedValue, isArr ? 'array' : value === null ? 'null' : typeof value, false, arr)
       arr.push(item)
     }
     return arr

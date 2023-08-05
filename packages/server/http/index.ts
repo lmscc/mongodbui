@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import path from 'path'
 import session from 'express-session'
+import path from 'path'
 
 import '../utils/expandGlobal'
 import loginRouter from './login-router'

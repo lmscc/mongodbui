@@ -1,7 +1,7 @@
 import axios from 'axios'
+import type { AxiosError, CancelTokenSource } from 'axios'
 import globalStore from '@/global'
 import type { dbMap } from '@/global/types'
-import type { AxiosError, CancelTokenSource } from 'axios'
 // import type { doc } from '@r/global'
 function errorHandler(err: AxiosError) {
   // 这里是返回状态码不为200时候的错误处理
@@ -186,14 +186,7 @@ export function findDocumentById(dbName: string, colName: string, id: string) {
   })
 }
 
-export function findDocumnet(
-  dbName: string,
-  colName: string,
-  skip: number,
-  limit: number,
-  condition: object,
-  sort: any
-) {
+export function findDocumnet(dbName: string, colName: string, skip: number, limit: number, condition: object, sort: any) {
   return axios.post<
     any,
     {

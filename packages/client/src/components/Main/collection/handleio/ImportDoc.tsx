@@ -1,16 +1,11 @@
 import { Modal } from 'antd'
-import { dispatch, select, selectByFn, type pageConfig } from '@/reducers/index'
 import { useState } from 'react'
+import { dispatch, select, selectByFn } from '@/reducers/index'
 import ObjDisplay from '@/components/common/objview/index'
 import { addDocument } from '@/request/index'
 import store from '@/global'
 export default function ImportDoc({ open, onCancel }: { open: boolean; onCancel: () => void }) {
-  const { activeDb, activeCol, dbAndCol, activeColPageId } = select('main')(
-    'activeDb',
-    'activeCol',
-    'dbAndCol',
-    'activeColPageId'
-  )
+  const { activeDb, activeCol, dbAndCol, activeColPageId } = select('main')('activeDb', 'activeCol', 'dbAndCol', 'activeColPageId')
   const pageConfig = selectByFn('main')((state) => state.colPageList.find((item) => item.id === activeColPageId))
 
   const [obj, setObj] = useState({

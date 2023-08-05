@@ -1,13 +1,12 @@
 import { message, ConfigProvider } from 'antd'
 import { Provider } from 'react-redux'
-
-import store, { select } from '@/reducers/index'
-import { RouterProvider } from 'react-router-dom'
-import { GlobalLoading } from '@/components/common/Loading'
-import globalStore from '@/global/index'
 import { AliveScope } from 'react-activation'
+import { RouterProvider } from 'react-router-dom'
 import router from './router'
 import Modals from './components/modals'
+import store, { select } from '@/reducers/index.ts'
+import globalStore from '@/global/index'
+import { GlobalLoading } from '@/components/common/Loading'
 function App() {
   const { showLoading } = select('main')('showLoading')
 

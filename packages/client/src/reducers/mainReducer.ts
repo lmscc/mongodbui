@@ -34,7 +34,7 @@ const defState: mainStateType = {
           hostName: location.hostname,
           port: 27017,
           userName: 'admin',
-          psd: 'password123'
+          psd: 'password-password-password'
         }
       : arr[0],
   isLogin: false,
@@ -43,6 +43,7 @@ const defState: mainStateType = {
   activeDb: null,
   activeCol: null,
   docList: null,
+  // 页面信息
   colPageList: [],
   activeColPageId: 0,
   showLoading: false

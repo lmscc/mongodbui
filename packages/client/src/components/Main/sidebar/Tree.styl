@@ -1,5 +1,6 @@
 .tree
   cursor: pointer
+  height: 100%
   .normal-icon
     margin-right 10px
   .selected
@@ -17,7 +18,7 @@
       background: #00684a 
     .triangle::after
       border-top : 6px solid #00684a !important
-  .content .item,.title
+  .item,.title
     &:hover
       .round-icon
         opacity: 1
@@ -52,10 +53,10 @@
     &:hover
       background: #e8edeb
   
-  .content
-    .item
-      padding-left 20px
-      display: flex
-      align-items: center
-      &:hover
-        background: #e8edeb
+  
+  .item
+    padding-left 20px
+    display: flex
+    align-items: center
+    &:hover
+      background: #e8edeb

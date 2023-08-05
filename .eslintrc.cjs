@@ -15,9 +15,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
     // tsconfigRootDir: '.'
-    project: ['./packages/client/tsconfig.json','./packages/server/tsconfig.json']
+    project: ['./packages/client/tsconfig.json', './packages/server/tsconfig.json']
   },
-  plugins: ['react', 'unused-imports', 'prettier','import'],
+  plugins: ['react', 'unused-imports', 'prettier', 'import'],
   rules: {
     'prettier/prettier': 'error',
     'unused-imports/no-unused-imports': 'error',
@@ -33,25 +33,29 @@ module.exports = {
       process.env.NODE_ENV === 'production' ? 'on' : 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     'react/react-in-jsx-scope': 'off',
-    '@typescript-eslint/no-confusing-void-expression':'OFF'
+    '@typescript-eslint/no-confusing-void-expression': 'off',
+    "import/order": ["error",
+      {
+        "groups":
+          [
+            "external",
+            "builtin",
+            "internal",
+            "sibling",
+            "parent",
+            "index"
+          ]
+      }
+    ]
   },
   settings: {
     "import/resolver": {
       "alias": {
-        "map": [["@",`${__dirname}/packages/client/src` ]],
+        "map": [
+          ["@", `${__dirname}/packages/client/src`]
+        ],
         // "extensions": [".js", ".jsx",'.ts','.tsx']
       }
     },
-    "import/order": ["error", {
-      "newlines-between": "always",
-      "pathGroups": [
-        {
-          "pattern": "@app/**",
-          "group": "external",
-          "position": "after"
-        }
-      ],
-      "distinctGroup": false
-    }]
   }
 }

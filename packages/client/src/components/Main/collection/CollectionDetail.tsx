@@ -1,19 +1,21 @@
 import { Button, Segmented } from 'antd'
-import React, { useCallback, useEffect, useState } from 'react'
-import { findDocumnet } from '@/request/index'
+import React, { useCallback, useState } from 'react'
+import { CanceledError } from 'axios'
 import ColListItem from './colListItem/Item'
 import CollectionEmpty from './CollectionEmpty'
+import ImportPopover from './handleio/ImportPopover'
+import Search from './search/Search'
+import { findDocumnet } from '@/request/index'
 import { type dbMap } from '@/global/types'
 import { Loading } from '@/components/common/Loading'
-import ImportPopover from './handleio/ImportPopover'
 import { select, dispatch, selectByFn } from '@/reducers/index'
 import './CollectionDetail.styl'
-import Search from './search/Search'
 import { useNav } from '@/router/navigate'
 import { LazyComponet } from '@/components/common/LazyLoad'
 import { type pageConfig } from '@/reducers/mainReducer'
+import { useSyncEffect } from '@/hooks'
 
-const ONE_PAGE = 10
+const ONE_PAGE = 20
 const defaultConfig = {
   skip: 0,
   limit: Infinity,
@@ -39,14 +41,11 @@ function CollectionDetail({
   const [refreshDoc, setRefreshDoc] = useState(1)
 
   let docList = curPage && curPage.docList
+  console.log('docList', docList)
 
   const col: collection =
     selectByFn('main')((state) => {
-      return (
-        state.dbAndCol != null &&
-        DbName != null &&
-        state.dbAndCol[DbName].collections.find((item) => item.name === colName)
-      )
+      return state.dbAndCol != null && DbName != null && state.dbAndCol[DbName].collections.find((item) => item.name === colName)
     }) || {}
   /*
   最大是多少条：
@@ -55,8 +54,12 @@ function CollectionDetail({
     2、查到20条，但是跳过15条，只剩下5条  count - skip
     取小 Math.min(limit,count - skip)
   */
-  const [max, setMax] = useState(col.count)
   const [searchConfig, setSearchConfig] = useState(defaultConfig)
+  const [max, setMax] = useState(col.count)
+  useSyncEffect(() => {
+    // 当col改变，有可能count改变
+    setMax(Math.min(searchConfig.limit, col.count - searchConfig.skip))
+  }, [col])
   const { goDb } = useNav()
 
   const [page, setPage] = useState(0)
@@ -68,9 +71,11 @@ function CollectionDetail({
   function callWithErrorHandler(promise) {
     setLoading(true)
     promise
-      .catch(() => {
-        setMax(0)
-        curPage && (curPage.docList = [])
+      .catch((err) => {
+        if (!(err instanceof CanceledError)) {
+          setMax(0)
+          curPage && (curPage.docList = [])
+        }
       })
       .finally(() => {
         setLoading(false)
@@ -86,6 +91,7 @@ function CollectionDetail({
         searchConfig.condition,
         searchConfig.sort
       ).then(({ arr, count }) => {
+        // 不能超过最大限制条数，以及skip之后的条数
         setMax(Math.min(searchConfig.limit, count - searchConfig.skip))
         curPage && (curPage.docList = arr)
         dispatch('main')('', {})
@@ -105,12 +111,18 @@ function CollectionDetail({
         })
         setMax(Math.min(limit, count - skip))
         curPage && (curPage.docList = arr)
+        const col = dbAndCol[DbName].collections.find((item) => item.name === colName)
+        col.count = count
+        // 更新这个col
+        dbAndCol[DbName].collections[dbAndCol[DbName].collections.findIndex((item) => item.name === colName)] = JSON.parse(
+          JSON.stringify(col)
+        )
         dispatch('main')('', {})
       })
     )
   }
 
-  useEffect(() => {
+  useSyncEffect(() => {
     setSearchConfig(defaultConfig)
     setPage(0)
     if (col.count > 0) {
@@ -137,8 +149,7 @@ function CollectionDetail({
 
       const newDbAndCol: dbMap = JSON.parse(JSON.stringify(dbAndCol))
 
-      newDbAndCol[DbName].collections[dbAndCol[DbName].collections.findIndex((item) => item.name === colName)].count =
-        col.count - 1
+      newDbAndCol[DbName].collections[dbAndCol[DbName].collections.findIndex((item) => item.name === colName)].count = col.count - 1
       curPage.docList = curPage.docList.filter((item) => item._id !== id)
       setMax((pre) => pre - 1)
 
@@ -148,8 +159,8 @@ function CollectionDetail({
     },
     [dbAndCol, DbName, curPage]
   )
-
-  const [renderedCount, setRenderedCount] = useState(1)
+  // 按需渲染
+  const [renderedCount, setRenderedCount] = useState(10)
   const renderedList = docList.slice(0, renderedCount)
   function renderMore(...props) {
     setRenderedCount((pre) => {
@@ -160,25 +171,13 @@ function CollectionDetail({
       }
     })
   }
-  useEffect(() => {
+  useSyncEffect(() => {
     setRenderedCount(1)
   }, [page])
 
   function mapDoc(...props) {
     return renderedList.slice(...props).map((item, index) => {
-      return (
-        <>
-          <ColListItem
-            dbName={DbName}
-            colName={colName}
-            key={item._id}
-            obj={item}
-            onDelete={(id) => {
-              handleDelete(id)
-            }}
-          />
-        </>
-      )
+      return <ColListItem dbName={DbName} colName={colName} key={item._id} obj={item} onDelete={handleDelete} />
     })
   }
   return (
@@ -195,7 +194,7 @@ function CollectionDetail({
             <div className="key">Documents</div>
           </div>
           <div className="flexbox">
-            <div className="value">{col.count}</div>
+            <div className="value">{1}</div>
             <div className="key">Indexes</div>
           </div>
         </div>
@@ -240,11 +239,7 @@ function CollectionDetail({
         ) : docList.length === 0 ? (
           <CollectionEmpty></CollectionEmpty>
         ) : (
-          <div className="colList">
-            {mapDoc(0, -1)}
-            <LazyComponet callBack={renderMore} />
-            {mapDoc(-1)}
-          </div>
+          <div className="colList">{[...mapDoc(0, -1), <LazyComponet key={'lazyComponent'} callBack={renderMore} />, ...mapDoc(-1)]}</div>
         )}
       </div>
     </div>

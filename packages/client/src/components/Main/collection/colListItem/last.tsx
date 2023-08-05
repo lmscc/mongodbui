@@ -3,10 +3,6 @@ import { Button, Popover } from 'antd'
 import clipboard from 'clipboard'
 
 import './ColListItem.styl'
-import { deleteDocument, findDocumentById, updateDocument } from '@/request/index'
-import store from '@/global'
-import Input from '@/components/common/Input'
-import { select } from '@/reducers'
 import {
   type KeyValueArr,
   type KeyValueItem,
@@ -17,6 +13,10 @@ import {
   addNewItems,
   deleteItems
 } from '../../../common/objview/keyValue'
+import { deleteDocument, findDocumentById, updateDocument } from '@/request/index'
+import store from '@/global'
+import Input from '@/components/common/Input'
+import { select } from '@/reducers'
 import { isObject } from '@/global/utils'
 import type { doc } from '@/global/types'
 function getTypeColor(key: string | number, value: any, isObject: boolean | undefined) {
@@ -45,13 +45,7 @@ interface grandType {
   editable: boolean
 }
 
-function getPopoverContent(
-  isObject: boolean,
-  isArr: boolean,
-  isArrayItem: boolean,
-  key: string,
-  addFn: (type: 'add' | 'after') => void
-) {
+function getPopoverContent(isObject: boolean, isArr: boolean, isArrayItem: boolean, key: string, addFn: (type: 'add' | 'after') => void) {
   const jsxArr = []
   if (!isArrayItem) {
     jsxArr.push(

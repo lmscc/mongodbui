@@ -1,10 +1,10 @@
+import { Input, Form, Button } from 'antd'
+import { type ChangeEvent } from 'react'
+import { useLocalStorageState } from 'ahooks'
+import styles from './Login.module.styl'
 import { dispatch } from '@/reducers'
 import { login } from '@/request'
 import { useNav } from '@/router/navigate'
-import { Input, Form, Button } from 'antd'
-import { type ChangeEvent } from 'react'
-import styles from './Login.module.styl'
-import { useLocalStorageState } from 'ahooks'
 import { select } from '@/reducers/index'
 import { ensureDbAndCol } from '@/request/ensure'
 function headZero(num) {
@@ -45,9 +45,9 @@ export default function Login() {
           psd,
           host: `${hostName}:${port}`,
           timestamp: Date.now(),
-          time: `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${headZero(
-            date.getHours()
-          )}:${headZero(date.getMinutes())}`
+          time: `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${headZero(date.getHours())}:${headZero(
+            date.getMinutes()
+          )}`
         },
         ...recentList
       ])

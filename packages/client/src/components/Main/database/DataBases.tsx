@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import ListItem from './components/ListItem'
 import ControlHeader from './components/ControlHeader'
-import { itemModeType } from '@/global/enums'
 import style from './DataBases.module.styl'
+import { itemModeType } from '@/global/enums'
 
 import { createDB, deleteDB } from '@/components/modals/index'
 import { select } from '@/reducers'
