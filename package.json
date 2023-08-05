@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "lint": "eslint --cache --ext .ts,.tsx --fix --quiet ."
+    "lint": "eslint --cache --ext .ts,.tsx --fix --quiet .",
+    "push":"git add . && mx amd && mx pf"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",
